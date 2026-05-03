@@ -594,20 +594,82 @@ const Dashboard = () => {
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-8">
                   {productForm.images.map((url, i) => (
-                    <div key={`img-${i}`} className="relative aspect-square rounded-[2rem] overflow-hidden bg-white shadow-sm group border border-ganache-rich/5">
-                      {url ? <img src={url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-ganache-rich/5 text-[9px] italic">Empty</div>}
-                      <div className="absolute inset-0 bg-ganache-rich/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-6 gap-4">
-                        <input type="text" value={url} placeholder="URL" onChange={(e) => handleMediaChange(i, e.target.value, 'images')} className="w-full bg-white/10 border border-white/20 py-2 px-4 rounded-full text-[8px] text-white outline-none" />
-                        <label className="cursor-pointer text-white/60 hover:text-white transition-colors"><UploadCloud className="w-4 h-4" /><input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'images')} /></label>
-                        <div className="flex gap-2">
-                          <button type="button" onClick={() => moveMedia(i, 'left', 'images')} className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20"><ChevronLeft className="w-3 h-3" /></button>
-                          <button type="button" onClick={() => removeMedia(i, 'images')} className="w-8 h-8 rounded-full bg-red-800/40 text-white flex items-center justify-center hover:bg-red-800"><Trash2 className="w-3 h-3" /></button>
-                          <button type="button" onClick={() => moveMedia(i, 'right', 'images')} className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20"><ChevronRight className="w-3 h-3" /></button>
+                    <motion.div 
+                      layout
+                      key={`img-${i}`} 
+                      className="relative aspect-square rounded-[2.5rem] overflow-hidden bg-white shadow-lg group border border-ganache-rich/5"
+                    >
+                      {url ? (
+                        <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-ganache-rich/10 text-[9px] uppercase tracking-widest font-black gap-4">
+                          <UploadCloud className="w-6 h-6 opacity-20" />
+                          Empty Slot
+                        </div>
+                      )}
+                      
+                      {/* Main Image Badge */}
+                      {i === 0 && url && (
+                        <div className="absolute top-6 left-6 bg-copper-accent text-white text-[8px] uppercase tracking-[0.3em] font-black px-4 py-2 rounded-full shadow-xl z-20">
+                          Main Photo
+                        </div>
+                      )}
+
+                      <div className="absolute inset-0 bg-ganache-rich/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col items-center justify-center p-8 gap-6 z-30">
+                        <div className="w-full space-y-4">
+                          <p className="text-[8px] uppercase tracking-[0.4em] font-black text-white/40 text-center">Image URL</p>
+                          <input 
+                            type="text" 
+                            value={url} 
+                            placeholder="Enter URL..." 
+                            onChange={(e) => handleMediaChange(i, e.target.value, 'images')} 
+                            className="w-full bg-white/10 border border-white/20 py-3 px-6 rounded-full text-[9px] text-white outline-none focus:bg-white/20 focus:border-white/40 transition-all text-center" 
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <label className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white hover:text-ganache-rich transition-all cursor-pointer shadow-xl">
+                            <UploadCloud className="w-5 h-5" />
+                            <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'images')} />
+                          </label>
+                          
+                          <div className="h-8 w-[1px] bg-white/10 mx-2"></div>
+
+                          <button 
+                            type="button" 
+                            onClick={() => moveMedia(i, 'left', 'images')} 
+                            disabled={i === 0}
+                            className={`w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center transition-all shadow-xl ${i === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white hover:text-ganache-rich'}`}
+                          >
+                            <ChevronLeft className="w-5 h-5" />
+                          </button>
+
+                          <button 
+                            type="button" 
+                            onClick={() => removeMedia(i, 'images')} 
+                            className="w-12 h-12 rounded-full bg-red-500/20 text-red-200 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-xl"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+
+                          <button 
+                            type="button" 
+                            onClick={() => moveMedia(i, 'right', 'images')} 
+                            disabled={i === productForm.images.length - 1}
+                            className={`w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center transition-all shadow-xl ${i === productForm.images.length - 1 ? 'opacity-20 pointer-events-none' : 'hover:bg-white hover:text-ganache-rich'}`}
+                          >
+                            <ChevronRight className="w-5 h-5" />
+                          </button>
                         </div>
                       </div>
-                    </div>
+
+                      {/* Order Number */}
+                      <div className="absolute bottom-6 right-6 w-8 h-8 rounded-full bg-black/20 backdrop-blur-md text-white text-[10px] font-black flex items-center justify-center border border-white/10">
+                        {i + 1}
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
