@@ -34,12 +34,20 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 backdrop-blur-md ${isScrolled ? 'bg-silk-base/95 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.03)] border-b border-ganache-rich/5' : 'bg-silk-base/40 py-6 lg:py-8 border-b border-ganache-rich/0'}`}>
-        <div className="flex justify-between items-center px-6 lg:px-12 max-w-[1440px] mx-auto relative">
-          {/* Left: Desktop Links */}
-          <div className="w-1/3 flex justify-start items-center">
+      <nav 
+        className={`fixed top-0 w-full z-[100] transition-all duration-700 ${isScrolled ? 'bg-silk-base/90 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.05)] border-b border-ganache-rich/5' : 'bg-silk-base/75 py-6 lg:py-8 border-b border-ganache-rich/0'}`}
+        style={{ 
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          willChange: 'padding, background-color, box-shadow'
+        }}
+      >
+        <div className="flex justify-between items-center px-6 lg:px-12 max-w-[1440px] mx-auto relative h-12 lg:h-16">
+          
+          {/* Left: Mobile Menu Trigger / Desktop Links */}
+          <div className="flex-1 flex justify-start items-center">
             <button 
-              className="lg:hidden text-ganache-rich p-2 -ml-2 focus:outline-none touch-manipulation"
+              className="lg:hidden text-ganache-rich p-2 -ml-2 focus:outline-none touch-manipulation active:scale-95 transition-transform"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Menu"
             >
@@ -66,16 +74,16 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Center: Brand Title (Absolutely Centered) */}
-          <div className="absolute left-1/2 -translate-x-1/2 flex justify-center items-center pointer-events-auto">
-            <Link to="/" className="text-3xl lg:text-5xl font-bold tracking-[-0.03em] text-ganache-rich whitespace-nowrap group cursor-pointer text-center no-underline font-headline-lg italic">
+          {/* Center: Brand Title (Responsive Centering) */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex justify-center items-center w-max max-w-[60%] lg:max-w-none">
+            <Link to="/" className="text-[17px] sm:text-2xl lg:text-5xl font-bold tracking-[-0.03em] text-ganache-rich whitespace-nowrap group cursor-pointer text-center no-underline font-headline-lg italic transition-all duration-700">
               Jabal Al Ayham
               <div className="h-[1px] w-0 group-hover:w-full bg-copper-accent transition-all duration-1000 mx-auto mt-[-2px]"></div>
             </Link>
           </div>
 
           {/* Right: Icons / Auth */}
-          <div className="w-1/3 flex justify-end items-center gap-2 lg:gap-6">
+          <div className="flex-1 flex justify-end items-center gap-2 lg:gap-6">
             <button className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500 hidden sm:flex">
               <span className="material-symbols-outlined text-[24px] font-light">search</span>
             </button>
@@ -83,15 +91,15 @@ const Navbar = () => {
             {(!user || user.role === 'customer') && (
               <button 
                 onClick={() => setIsDrawerOpen(true)}
-                className="relative w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" 
+                className="relative w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500 touch-manipulation" 
                 title="Boutique Bag"
               >
-                <span className="material-symbols-outlined text-[24px] font-light">shopping_bag</span>
+                <span className="material-symbols-outlined text-[28px] lg:text-[24px] font-light">shopping_bag</span>
                 {itemCount > 0 && (
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-[#C19A6B] text-white text-[11px] font-black flex items-center justify-center rounded-full shadow-2xl z-10 border border-white/20"
+                    className="absolute top-0 -right-1 w-5 h-5 lg:w-6 lg:h-6 bg-[#C19A6B] text-white text-[9px] lg:text-[11px] font-black flex items-center justify-center rounded-full shadow-2xl z-10 border border-white/20"
                   >
                     {itemCount}
                   </motion.span>
@@ -101,12 +109,12 @@ const Navbar = () => {
 
             {user ? (
               <div className="flex items-center gap-2 lg:gap-6">
-                <Link to="/dashboard" className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" title="Profile">
+                <Link to="/dashboard" className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500 hidden sm:flex" title="Profile">
                   <span className="material-symbols-outlined text-[24px] font-light">person</span>
                 </Link>
                 <button 
                   onClick={handleLogout}
-                  className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-red-800 transition-all duration-500 group"
+                  className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-red-800 transition-all duration-500 group hidden sm:flex"
                   title="Logout"
                 >
                    <span className="material-symbols-outlined text-[24px] font-light group-hover:scale-110 transition-transform">logout</span>
@@ -115,7 +123,7 @@ const Navbar = () => {
             ) : (
               <Link 
                 to="/login" 
-                className="group relative overflow-hidden bg-[#2D1B14] text-[#FDFBF7] px-6 lg:px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl shadow-[#2D1B14]/10 hover:shadow-[#C19A6B]/20"
+                className="group relative overflow-hidden bg-[#2D1B14] text-[#FDFBF7] px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl shadow-[#2D1B14]/10 hover:shadow-[#C19A6B]/20"
               >
                 <span className="relative z-10">Login</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#C19A6B] to-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

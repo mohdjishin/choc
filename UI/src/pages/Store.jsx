@@ -66,15 +66,15 @@ const Store = () => {
       <div className="max-w-[1800px] mx-auto px-8 lg:px-20 relative z-10 space-y-24">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
-          <div className="space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 overflow-hidden">
+          <div className="space-y-6 w-full md:w-auto">
             <motion.p 
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-              className="text-[10px] uppercase tracking-[0.6em] font-bold text-copper-accent"
+              className="text-[9px] sm:text-[10px] uppercase tracking-[0.5em] sm:tracking-[0.6em] font-bold text-copper-accent"
             >
               The Collection
             </motion.p>
-            <h1 className="text-8xl lg:text-9xl font-headline-lg italic text-ganache-rich tracking-tighter leading-none">
+            <h1 className="text-6xl sm:text-8xl lg:text-9xl font-headline-lg italic text-ganache-rich tracking-tighter leading-none break-words">
               Boutique
             </h1>
           </div>

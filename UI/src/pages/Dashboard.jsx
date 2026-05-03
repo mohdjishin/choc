@@ -34,8 +34,8 @@ const Card = ({ children, className = "", onClick }) => (
 
 const SectionHeading = ({ sub, main }) => (
   <div className="mb-12">
-    <p className="text-[10px] uppercase tracking-[0.6em] font-bold text-copper-accent mb-4">{sub}</p>
-    <h1 className="text-6xl font-headline-lg italic text-ganache-rich tracking-tight leading-tight">{main}</h1>
+    <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.5em] sm:tracking-[0.6em] font-bold text-copper-accent mb-4">{sub}</p>
+    <h1 className="text-4xl sm:text-6xl font-headline-lg italic text-ganache-rich tracking-tight leading-tight">{main}</h1>
   </div>
 );
 
@@ -435,8 +435,8 @@ const Dashboard = () => {
           <SectionHeading sub={editingProduct ? "Edit Item" : "New Item"} main={editingProduct ? "Edit" : "Create"} />
           <form onSubmit={handleCreateProduct} className="flex-1 flex flex-col mt-12 space-y-16">
             <div className="space-y-4">
-              <label className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/30 ml-8 italic">Product Name</label>
-              <input type="text" required value={productForm.name} onChange={(e) => setProductForm({...productForm, name: e.target.value})} placeholder="Product Name" className="text-6xl font-headline-md italic text-ganache-rich bg-white/40 border border-ganache-rich/5 py-8 px-12 rounded-[2rem] outline-none placeholder:text-ganache-rich/5 w-full focus:bg-white focus:shadow-xl transition-all tracking-tight" />
+              <label className="text-[9px] sm:text-[10px] uppercase tracking-[0.4em] sm:tracking-[0.5em] font-black text-ganache-rich/30 ml-4 sm:ml-8 italic">Product Name</label>
+              <input type="text" required value={productForm.name} onChange={(e) => setProductForm({...productForm, name: e.target.value})} placeholder="Product Name" className="text-3xl sm:text-6xl font-headline-md italic text-ganache-rich bg-white/40 border border-ganache-rich/5 py-6 sm:py-8 px-8 sm:px-12 rounded-3xl sm:rounded-[2rem] outline-none placeholder:text-ganache-rich/5 w-full focus:bg-white focus:shadow-xl transition-all tracking-tight" />
             </div>
 
             <div className="grid grid-cols-2 gap-12">

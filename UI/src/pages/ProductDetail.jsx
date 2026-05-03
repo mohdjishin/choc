@@ -185,9 +185,9 @@ const ProductDetail = () => {
           {/* Product Info */}
           <div className="lg:col-span-5 space-y-16">
             <div className="space-y-6">
-              <p className="text-[11px] uppercase tracking-[0.8em] font-black text-copper-accent">{product.category}</p>
-              <h1 className="text-7xl lg:text-8xl font-headline-lg italic text-ganache-rich tracking-tighter leading-none">{product.name}</h1>
-              <p className="text-4xl font-headline-sm italic text-ganache-rich/30 pt-4 tracking-tighter">AED {product.price?.toFixed(2)}</p>
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.6em] sm:tracking-[0.8em] font-black text-copper-accent">{product.category}</p>
+              <h1 className="text-4xl sm:text-7xl lg:text-8xl font-headline-lg italic text-ganache-rich tracking-tighter leading-none">{product.name}</h1>
+              <p className="text-3xl sm:text-4xl font-headline-sm italic text-ganache-rich/30 pt-4 tracking-tighter">AED {product.price?.toFixed(2)}</p>
             </div>
 
             <p className="text-lg font-body-md text-ganache-rich/60 leading-relaxed italic">
@@ -263,8 +263,8 @@ const ProductDetail = () => {
               >
                 <div className={`space-y-12 ${i % 2 !== 0 ? 'lg:order-2' : ''}`}>
                   <div className="space-y-6">
-                    <p className="text-[11px] uppercase tracking-[0.8em] font-black text-copper-accent">{block.tag || 'The Craft'}</p>
-                    <h2 className="text-6xl lg:text-7xl font-headline-lg italic text-ganache-rich leading-tight tracking-tighter">{block.title}</h2>
+                    <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.6em] sm:tracking-[0.8em] font-black text-copper-accent">{block.tag || 'The Craft'}</p>
+                    <h2 className="text-4xl sm:text-6xl lg:text-7xl font-headline-lg italic text-ganache-rich leading-tight tracking-tighter">{block.title}</h2>
                   </div>
                   <p className="text-xl font-body-md text-ganache-rich/50 italic leading-relaxed max-w-xl">
                     {block.content}
@@ -282,8 +282,8 @@ const ProductDetail = () => {
         {navigation.next_id && (
            <div className="mt-60 border-t border-ganache-rich/5 pt-32 text-center space-y-12">
               <p className="text-[11px] uppercase tracking-[0.8em] font-black text-copper-accent">Next Masterpiece</p>
-              <Link to={`/product/${navigation.next_id}`} className="group inline-block">
-                <h3 className="text-7xl lg:text-9xl font-headline-lg italic text-ganache-rich tracking-tighter opacity-10 group-hover:opacity-100 group-hover:text-copper-accent transition-all duration-1000">Discover Next</h3>
+              <Link to={`/product/${navigation.next_id}`} className="group inline-block w-full">
+                <h3 className="text-5xl sm:text-7xl lg:text-9xl font-headline-lg italic text-ganache-rich tracking-tighter opacity-10 group-hover:opacity-100 group-hover:text-copper-accent transition-all duration-1000 break-words">Discover Next</h3>
                 <motion.div 
                   animate={{ x: [0, 20, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}

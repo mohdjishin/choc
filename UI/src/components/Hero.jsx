@@ -36,12 +36,12 @@ const Hero = ({ scrollY }) => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/40 via-silk-base/60 to-silk-base opacity-80"></div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-margin-page w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-gutter relative z-10 items-center min-h-[60vh] lg:min-h-[80vh]">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-margin-page w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-gutter relative z-10 items-center min-h-[50vh] lg:min-h-[80vh]">
         <div className="col-span-1 lg:col-span-6 space-y-8 lg:space-y-12 z-30 text-center lg:text-left animate-slide-up">
           <div className="inline-block px-5 py-2 rounded-full bg-copper-accent/10 border border-copper-accent/20 mb-4">
-            <span className="font-label-sm text-[10px] lg:text-[11px] uppercase tracking-[0.5em] text-copper-accent font-bold">Premium Chocolate Store</span>
+            <span className="font-label-sm text-[9px] sm:text-[10px] lg:text-[11px] uppercase tracking-[0.4em] sm:tracking-[0.5em] text-copper-accent font-bold">Premium Chocolate Store</span>
           </div>
-          <h1 className="font-display-xl text-5xl sm:text-7xl lg:text-[85px] text-ganache-rich leading-[1.05] lg:leading-[0.9] tracking-tighter">
+          <h1 className="font-display-xl text-[2.4rem] sm:text-7xl lg:text-[85px] text-ganache-rich leading-[1.05] lg:leading-[0.9] tracking-tighter overflow-hidden">
             {user ? (
               <span className="block">
                 Welcome, <br className="hidden sm:block" />
@@ -55,15 +55,15 @@ const Hero = ({ scrollY }) => {
             )}
           </h1>
           <div className="space-y-4">
-            <p className="text-xl lg:text-2xl font-headline-sm italic text-ganache-rich/60 leading-relaxed max-w-xl">
+            <p className="text-lg sm:text-xl lg:text-2xl font-headline-sm italic text-ganache-rich/60 leading-relaxed max-w-xl mx-auto lg:mx-0">
               "Each piece is a mix of high-quality dates and dark chocolate, made with love by our family."
             </p>
-            <p className="font-body-lg text-body-md lg:text-xl text-ganache-rich/40 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium italic">
+            <p className="font-body-lg text-body-sm sm:text-body-md lg:text-xl text-ganache-rich/40 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium italic">
               Enjoy our handmade chocolate made from fine dark cocoa and fresh dates. Perfect for sharing with family and friends.
             </p>
           </div>
           <div className="pt-6 lg:pt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">
-            <Link to="/store" className="w-full sm:w-auto bg-[#2D1B14] text-white px-14 py-6 font-label-sm text-[11px] uppercase tracking-[0.3em] hover:bg-copper-accent transition-all duration-700 shadow-[0_30px_60px_rgba(45,43,31,0.2)] hover:shadow-[0_40px_80px_rgba(45,43,31,0.3)] flex items-center justify-center gap-4 group rounded-sm font-bold no-underline">
+            <Link to="/store" className="w-full sm:w-auto bg-[#2D1B14] text-white px-6 sm:px-14 py-4 sm:py-6 font-label-sm text-[9px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.3em] hover:bg-copper-accent transition-all duration-700 shadow-[0_20px_40px_rgba(45,43,31,0.15)] hover:shadow-[0_40px_80px_rgba(45,43,31,0.3)] flex items-center justify-center gap-3 sm:gap-4 group rounded-sm font-bold no-underline">
               See All Products
               <span className="material-symbols-outlined text-sm group-hover:translate-x-2 transition-transform duration-500">east</span>
             </Link>

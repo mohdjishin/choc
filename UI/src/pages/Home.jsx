@@ -117,9 +117,9 @@ const Home = () => {
       </section>
 
       {/* Narrative Section */}
-      <section className="py-48 bg-ganache-rich text-silk-base relative overflow-hidden">
+      <section className="py-24 lg:py-48 bg-ganache-rich text-silk-base relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative aspect-square rounded-sm overflow-hidden">
              <video 
               autoPlay loop muted playsInline 
@@ -129,17 +129,17 @@ const Home = () => {
           </div>
           <div className="space-y-12">
             <SectionHeading sub="The Craft" main="Born from Heritage, Refined by Time" light />
-            <p className="text-xl lg:text-2xl font-headline-sm italic text-silk-base/60 leading-relaxed max-w-xl">
+            <p className="text-lg sm:text-xl lg:text-2xl font-headline-sm italic text-silk-base/60 leading-relaxed max-w-xl">
               "Every piece is a symphony of rare dates and Swiss-engineered cocoa, hand-painted with the legacy of Jabal Al Ayham."
             </p>
-            <div className="pt-8 grid grid-cols-2 gap-12 border-t border-silk-base/10">
+            <div className="pt-8 grid grid-cols-2 gap-8 lg:gap-12 border-t border-silk-base/10">
               <div>
-                <p className="text-4xl font-headline-lg text-copper-accent mb-2">100%</p>
-                <p className="text-[9px] uppercase tracking-[0.4em] font-black text-silk-base/40">Organic Origin</p>
+                <p className="text-3xl sm:text-4xl font-headline-lg text-copper-accent mb-2">100%</p>
+                <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.4em] font-black text-silk-base/40">Organic Origin</p>
               </div>
               <div>
-                <p className="text-4xl font-headline-lg text-copper-accent mb-2">24h</p>
-                <p className="text-[9px] uppercase tracking-[0.4em] font-black text-silk-base/40">Artisan Curation</p>
+                <p className="text-3xl sm:text-4xl font-headline-lg text-copper-accent mb-2">24h</p>
+                <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.4em] font-black text-silk-base/40">Artisan Curation</p>
               </div>
             </div>
           </div>
@@ -152,8 +152,8 @@ const Home = () => {
 
 const SectionHeading = ({ sub, main, light = false }) => (
   <div className="space-y-6">
-    <p className={`text-[10px] uppercase tracking-[0.6em] font-bold ${light ? 'text-copper-accent' : 'text-copper-accent'}`}>{sub}</p>
-    <h2 className={`text-6xl lg:text-8xl font-headline-lg italic tracking-tighter leading-[0.9] ${light ? 'text-silk-base drop-shadow-2xl' : 'text-ganache-rich'}`}>
+    <p className={`text-[9px] sm:text-[10px] uppercase tracking-[0.5em] sm:tracking-[0.6em] font-bold ${light ? 'text-copper-accent' : 'text-copper-accent'}`}>{sub}</p>
+    <h2 className={`text-4xl sm:text-6xl lg:text-8xl font-headline-lg italic tracking-tighter leading-[0.9] ${light ? 'text-silk-base drop-shadow-2xl' : 'text-ganache-rich'}`}>
       {main}
     </h2>
   </div>
