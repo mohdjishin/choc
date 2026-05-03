@@ -350,13 +350,14 @@ const Dashboard = () => {
                 <button
                   key={i + 1}
                   onClick={() => fetchProducts(i + 1)}
-                  className={`relative w-10 h-10 flex items-center justify-center text-[11px] font-black transition-all rounded-full ${currentPage === i + 1 ? 'text-silk-base' : 'text-ganache-rich/60 hover:text-ganache-rich hover:bg-silk-base/50'}`}
+                  className={`relative w-10 h-10 flex items-center justify-center text-[11px] font-black transition-all rounded-full ${currentPage === i + 1 ? 'text-[#FDFBF7]' : 'text-[#2D1B14]/40 hover:text-[#2D1B14] hover:bg-[#FDFBF7]'}`}
                 >
                   <span className="relative z-10">{String(i + 1).padStart(2, '0')}</span>
                   {currentPage === i + 1 && (
                     <motion.div 
                       layoutId="active-page-bg"
-                      className="absolute inset-0 bg-ganache-rich rounded-full shadow-2xl shadow-ganache-rich/40"
+                      className="absolute inset-0 rounded-full shadow-xl"
+                      style={{ backgroundColor: '#2D1B14' }}
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
