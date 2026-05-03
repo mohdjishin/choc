@@ -85,22 +85,24 @@ const Home = () => {
                       className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-ganache-rich/10 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-                    <button 
-                      onClick={(e) => { 
-                        e.preventDefault(); 
-                        e.stopPropagation(); 
-                        if (!user) {
-                          toast.error("Sign in to build your boutique archive");
-                          navigate('/login', { state: { from: '/' } });
-                          return;
-                        }
-                        addToCart(product, 1);
-                        toast.success(`${product.name} added to archive`);
-                      }}
-                      className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 bg-white text-ganache-rich px-8 py-4 rounded-full text-[9px] uppercase tracking-widest font-black flex items-center gap-3 shadow-2xl z-10"
-                    >
-                      <ShoppingBag className="w-3 h-3" /> Quick Add
-                    </button>
+                    {(!user || user.role === 'customer') && (
+                      <button 
+                        onClick={(e) => { 
+                          e.preventDefault(); 
+                          e.stopPropagation(); 
+                          if (!user) {
+                            toast.error("Sign in to build your boutique archive");
+                            navigate('/login', { state: { from: '/' } });
+                            return;
+                          }
+                          addToCart(product, 1);
+                          toast.success(`${product.name} added to archive`);
+                        }}
+                        className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 bg-white text-ganache-rich px-8 py-4 rounded-full text-[9px] uppercase tracking-widest font-black flex items-center gap-3 shadow-2xl z-10"
+                      >
+                        <ShoppingBag className="w-3 h-3" /> Quick Add
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-3">
                     <p className="text-[9px] uppercase tracking-[0.4em] font-bold text-copper-accent/60">{product.category}</p>

@@ -194,29 +194,31 @@ const ProductDetail = () => {
               {product.description || "A masterpiece of artisanal confectionery, crafted with the finest ingredients and centuries-old Swiss techniques."}
             </p>
 
-            <div className="space-y-10 pt-10 border-t border-ganache-rich/5">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
-                <div className="flex items-center justify-between border border-[#2D1B14]/10 rounded-full px-6 py-4 bg-[#FFFFFF]/50 backdrop-blur-sm shadow-inner">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">-</button>
-                  <span className="w-12 text-center text-sm font-black tracking-widest">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">+</button>
+            {(!user || user.role === 'customer') && (
+              <div className="space-y-10 pt-10 border-t border-ganache-rich/5">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+                  <div className="flex items-center justify-between border border-[#2D1B14]/10 rounded-full px-6 py-4 bg-[#FFFFFF]/50 backdrop-blur-sm shadow-inner">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">-</button>
+                    <span className="w-12 text-center text-sm font-black tracking-widest">{quantity}</span>
+                    <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">+</button>
+                  </div>
+                  
+                  <button 
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-[#2D1B14] text-[#FDFBF7] py-6 px-12 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(45,27,20,0.2)] hover:bg-[#C19A6B] hover:shadow-[0_20px_50px_rgba(193,154,107,0.3)] transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95"
+                  >
+                    <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Boutique Bag
+                  </button>
                 </div>
-                
+
                 <button 
-                  onClick={handleAddToCart}
-                  className="flex-1 bg-[#2D1B14] text-[#FDFBF7] py-6 px-12 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(45,27,20,0.2)] hover:bg-[#C19A6B] hover:shadow-[0_20px_50px_rgba(193,154,107,0.3)] transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95"
+                  onClick={handleBuyNow}
+                  className="w-full bg-silk-base/50 backdrop-blur-sm border border-[#2D1B14] text-[#2D1B14] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-[#2D1B14] hover:text-white transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-sm"
                 >
-                  <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Boutique Bag
+                  Buy Now
                 </button>
               </div>
-
-              <button 
-                onClick={handleBuyNow}
-                className="w-full bg-transparent border border-[#2D1B14] text-[#2D1B14] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-[#2D1B14] hover:text-white transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-sm"
-              >
-                Buy Now
-              </button>
-            </div>
+            )}
 
             {/* Accordions */}
             <div className="space-y-4 pt-10 border-t border-ganache-rich/5">

@@ -34,7 +34,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 backdrop-blur-md ${isScrolled ? 'bg-silk-base/95 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.03)] border-b border-ganache-rich/5' : 'bg-transparent py-6 lg:py-8'}`}>
+      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 backdrop-blur-md ${isScrolled ? 'bg-silk-base/95 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.03)] border-b border-ganache-rich/5' : 'bg-silk-base/20 py-6 lg:py-8 border-b border-ganache-rich/0'}`}>
         <div className="flex justify-between items-center px-6 lg:px-12 max-w-[1440px] mx-auto relative">
           {/* Left: Desktop Links */}
           <div className="w-1/3 flex justify-start items-center">
@@ -74,22 +74,24 @@ const Navbar = () => {
               <span className="material-symbols-outlined text-[24px] font-light">search</span>
             </button>
             
-            <button 
-              onClick={() => setIsDrawerOpen(true)}
-              className="relative w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" 
-              title="Boutique Bag"
-            >
-              <span className="material-symbols-outlined text-[24px] font-light">shopping_bag</span>
-              {itemCount > 0 && (
-                <motion.span 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-copper-accent text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-lg"
-                >
-                  {itemCount}
-                </motion.span>
-              )}
-            </button>
+            {(!user || user.role === 'customer') && (
+              <button 
+                onClick={() => setIsDrawerOpen(true)}
+                className="relative w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" 
+                title="Boutique Bag"
+              >
+                <span className="material-symbols-outlined text-[24px] font-light">shopping_bag</span>
+                {itemCount > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-copper-accent text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-lg"
+                  >
+                    {itemCount}
+                  </motion.span>
+                )}
+              </button>
+            )}
 
             {user ? (
               <div className="flex items-center gap-2 lg:gap-6">
