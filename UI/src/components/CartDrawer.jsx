@@ -5,7 +5,14 @@ import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 
 const CartDrawer = () => {
-  const { cart, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeFromCart, cartTotal, itemCount } = useCart();
+  const { cart, isDrawerOpen, setIsDrawerOpen, updateQuantity, removeFromCart, cartTotal, itemCount, placeOrder } = useCart();
+
+  const handleCheckout = async () => {
+    const success = await placeOrder();
+    if (success) {
+      // Maybe navigate to orders page or just let the toast show
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -93,7 +100,10 @@ const CartDrawer = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#2D1B14] text-[#FDFBF7] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-2xl hover:bg-[#C19A6B] transition-all duration-700 flex items-center justify-center gap-4 group">
+                <button 
+                  onClick={handleCheckout}
+                  className="w-full bg-[#2D1B14] text-[#FDFBF7] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-2xl hover:bg-[#C19A6B] transition-all duration-700 flex items-center justify-center gap-4 group"
+                >
                   Secure Checkout
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                 </button>

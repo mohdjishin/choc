@@ -12,7 +12,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 )
 
-func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler) *chi.Mux {
+func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler) *chi.Mux {
 	r := chi.NewRouter()
 
 	// CORS configuration
@@ -70,6 +70,8 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 			r.Get("/admin/dashboard", func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("Welcome to the Admin Dashboard"))
 			})
+			r.Get("/admin/orders", orderHandler.ListAllOrders)
+			r.Put("/admin/orders/{id}/status", orderHandler.UpdateOrderStatus)
 		})
 
 		// Super Admin only routes
@@ -88,6 +90,8 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 			})
 			r.Get("/cart", cartHandler.GetCart)
 			r.Post("/cart", cartHandler.UpdateCart)
+			r.Post("/orders", orderHandler.CreateOrder)
+			r.Get("/orders", orderHandler.ListUserOrders)
 		})
 	})
 

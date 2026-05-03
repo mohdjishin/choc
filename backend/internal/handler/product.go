@@ -144,13 +144,16 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	outOfStockCount, _ := collection.CountDocuments(ctx, bson.M{"stock": 0})
+	
 	response := map[string]interface{}{
 		"products": products,
 		"metadata": map[string]interface{}{
-			"current_page": page,
-			"limit":        limit,
-			"total_count":  totalCount,
-			"total_pages":  (int(totalCount) + limit - 1) / limit,
+			"current_page":        page,
+			"limit":               limit,
+			"total_count":         totalCount,
+			"total_pages":         (int(totalCount) + limit - 1) / limit,
+			"out_of_stock_count":  outOfStockCount,
 		},
 	}
 

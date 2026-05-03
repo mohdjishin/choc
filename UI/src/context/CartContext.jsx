@@ -108,6 +108,41 @@ export const CartProvider = ({ children }) => {
     setCart([]);
   };
 
+  const placeOrder = async () => {
+    if (!user) {
+      toast.error("Please login to place an order");
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast.error("Your boutique bag is empty");
+      return;
+    }
+
+    try {
+      const orderData = {
+        items: cart.map(item => ({
+          product_id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          image: item.images?.[0] || ""
+        })),
+        total_amount: cartTotal
+      };
+
+      await api.post('/orders', orderData);
+      clearCart();
+      toast.success("Order placed successfully! We will contact you soon.");
+      setIsDrawerOpen(false);
+      return true;
+    } catch (err) {
+      console.error("Order failed", err);
+      toast.error("Failed to place order. Please try again.");
+      return false;
+    }
+  };
+
   const cartTotal = cart.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -118,6 +153,7 @@ export const CartProvider = ({ children }) => {
       removeFromCart, 
       updateQuantity, 
       clearCart, 
+      placeOrder,
       cartTotal, 
       itemCount,
       isDrawerOpen,

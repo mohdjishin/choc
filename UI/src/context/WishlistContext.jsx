@@ -35,16 +35,14 @@ export const WishlistProvider = ({ children }) => {
       return;
     }
 
-    setWishlist(prev => {
-      const exists = prev.find(item => item.id === product.id);
-      if (exists) {
-        toast.success(`Removed ${product.name} from wishlist`);
-        return prev.filter(item => item.id !== product.id);
-      } else {
-        toast.success(`Added ${product.name} to wishlist`);
-        return [...prev, product];
-      }
-    });
+    const exists = wishlist.find(item => item.id === product.id);
+    if (exists) {
+      toast.success(`Removed ${product.name} from archive`);
+      setWishlist(prev => prev.filter(item => item.id !== product.id));
+    } else {
+      toast.success(`Added ${product.name} to archive`);
+      setWishlist(prev => [...prev, product]);
+    }
   };
 
   const isInWishlist = (productId) => {

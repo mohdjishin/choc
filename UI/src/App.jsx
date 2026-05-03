@@ -15,6 +15,7 @@ const Register = React.lazy(() => import('./pages/Register'));
 const Store = React.lazy(() => import('./pages/Store'));
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const Orders = React.lazy(() => import('./pages/Orders'));
 
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
@@ -26,7 +27,11 @@ function AppContent() {
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   return (
-    <div className="bg-silk-base text-ganache-rich antialiased overflow-x-hidden selection:bg-copper-accent selection:text-white min-h-screen">
+    <div className="bg-silk-base text-ganache-rich antialiased overflow-x-hidden selection:bg-copper-accent selection:text-white min-h-screen relative">
+      {/* Global Background Texture */}
+      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
+      
+      <div className="relative z-10">
       <Toaster 
         position="top-center"
         toastOptions={{
@@ -63,6 +68,16 @@ function AppContent() {
                 </PageWrapper>
               } 
             />
+            <Route 
+              path="/orders" 
+              element={
+                <PageWrapper>
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                </PageWrapper>
+              } 
+            />
             <Route path="/unauthorized" element={
               <PageWrapper>
                 <div className="flex flex-col items-center justify-center h-[70vh] text-[#2D1B14] px-4 text-center">
@@ -82,6 +97,7 @@ function AppContent() {
         </AnimatePresence>
       </React.Suspense>
       {!isAuthPage && <Footer />}
+      </div>
     </div>
   )
 }

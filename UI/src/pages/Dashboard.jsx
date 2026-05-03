@@ -18,12 +18,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
-  ChevronDown
+  ChevronDown,
+  Clock
 } from 'lucide-react';
 
 // Shared UI Components (Defined outside to prevent re-mounting and focus loss)
-const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(45,27,20,0.05)] border border-white/50 ${className}`}>
+const Card = ({ children, className = "", onClick }) => (
+  <div 
+    onClick={onClick}
+    className={`bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(45,27,20,0.05)] border border-white/50 ${className}`}
+  >
     {children}
   </div>
 );
@@ -37,7 +41,7 @@ const SectionHeading = ({ sub, main }) => (
 
 const Dashboard = () => {
   const { user, token } = useAuth();
-  const [activeTab, setActiveTab] = useState('inventory'); 
+  const [activeTab, setActiveTab] = useState('overview'); 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(null); 
   const [editingProduct, setEditingProduct] = useState(null);
@@ -55,9 +59,13 @@ const Dashboard = () => {
   });
 
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [metadata, setMetadata] = useState({ total_pages: 1 });
+  const [reasonModal, setReasonModal] = useState({ isOpen: false, orderId: null, status: null });
+  const [cancelReason, setCancelReasonText] = useState("");
 
   const fetchProducts = async (page = 1) => {
     setIsLoadingProducts(true);
@@ -73,9 +81,35 @@ const Dashboard = () => {
     }
   };
 
+  const fetchOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const data = await api.get('/admin/orders');
+      setOrders(data || []);
+    } catch (error) {
+      toast.error('Failed to fetch orders');
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId, newStatus, cancelReason = "") => {
+    try {
+      await api.put(`/admin/orders/${orderId}/status`, { 
+        status: newStatus,
+        cancel_reason: cancelReason 
+      });
+      toast.success(`Order status updated to ${newStatus}`);
+      fetchOrders();
+    } catch (error) {
+      toast.error(error.message || 'Failed to update status');
+    }
+  };
+
   React.useEffect(() => {
     if (user?.role === 'admin' || user?.role === 'super_admin') {
       fetchProducts(1);
+      fetchOrders();
     }
   }, [user]);
 
@@ -242,7 +276,15 @@ const Dashboard = () => {
   const renderInventoryTab = () => (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
       <div className="flex justify-between items-end">
-        <SectionHeading sub="Manage Items" main="Product List" />
+        <div className="flex flex-col gap-6">
+          <button 
+            onClick={() => setActiveTab('overview')}
+            className="text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/30 hover:text-ganache-rich transition-all flex items-center gap-4 mb-4"
+          >
+            <ChevronLeft className="w-4 h-4" /> Back to Dashboard
+          </button>
+          <SectionHeading sub="Manage Items" main="Product List" />
+        </div>
         <button 
           onClick={() => setActiveTab('studio')}
           className="bg-ganache-rich text-silk-base p-5 px-12 rounded-full transition-all uppercase tracking-[0.4em] text-[9px] font-bold shadow-2xl shadow-ganache-rich/20 flex items-center gap-4 hover:bg-copper-accent group active:scale-95"
@@ -255,7 +297,7 @@ const Dashboard = () => {
       <Card className="overflow-hidden">
         <div className="p-12 pb-0 flex justify-between items-center">
           <h3 className="text-2xl font-headline-md italic text-ganache-rich opacity-40">All Items</h3>
-          <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-ganache-rich/20">{products.length} Items</span>
+          <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-ganache-rich/20">{metadata.total_count || products.length} Total Items</span>
         </div>
 
         <div className="mt-4 overflow-x-auto">
@@ -703,9 +745,186 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderOrdersTab = () => (
+    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+      <div className="flex flex-col gap-6">
+        <button 
+          onClick={() => setActiveTab('overview')}
+          className="text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/30 hover:text-ganache-rich transition-all flex items-center gap-4"
+        >
+          <ChevronLeft className="w-4 h-4" /> Back to Dashboard
+        </button>
+        <SectionHeading sub="Client Relations" main="Order Archive" />
+      </div>
+      <Card className="overflow-hidden">
+        <div className="p-12 pb-0 flex justify-between items-center">
+          <h3 className="text-2xl font-headline-md italic text-ganache-rich opacity-40">All Orders</h3>
+          <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-ganache-rich/20">{orders.length} Total Orders</span>
+        </div>
+
+        <div className="mt-8 overflow-x-auto">
+          <table className="w-full text-left border-none">
+            <thead>
+              <tr className="bg-silk-base/10">
+                <th className="px-12 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20">Order ID</th>
+                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20">Customer</th>
+                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20">Items</th>
+                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right">Amount</th>
+                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-center">Status</th>
+                <th className="px-12 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right">Update Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-ganache-rich/[0.01]">
+              {isLoadingOrders ? (
+                 [...Array(5)].map((_, i) => <tr key={i} className="h-24 animate-pulse bg-ganache-rich/[0.01]" />)
+              ) : orders.map((order) => (
+                <tr key={order.id} className="group hover:bg-silk-base/20 transition-all duration-500">
+                  <td className="px-12 py-8">
+                    <p className="text-sm font-black tracking-widest text-ganache-rich">#{order.id?.slice(-8).toUpperCase() || 'N/A'}</p>
+                    <p className="text-[9px] text-ganache-rich/20 mt-1 uppercase font-bold">{order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}</p>
+                  </td>
+                  <td className="px-8 py-8">
+                    <p className="text-[11px] font-bold text-ganache-rich">{order.user_email}</p>
+                  </td>
+                  <td className="px-8 py-8">
+                    <div className="flex -space-x-4">
+                      {order.items.slice(0, 3).map((item, i) => (
+                        <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-white overflow-hidden shadow-sm">
+                          <img src={item.image} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                      {order.items.length > 3 && (
+                        <div className="w-10 h-10 rounded-full border-2 border-white bg-silk-base flex items-center justify-center text-[8px] font-black text-ganache-rich shadow-sm">
+                          +{order.items.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-8 py-8 text-right font-headline-sm italic text-copper-accent">
+                    AED {order.total_amount.toFixed(2)}
+                  </td>
+                  <td className="px-8 py-8 text-center">
+                    <span className={`text-[9px] px-4 py-2 rounded-full font-black uppercase tracking-widest ${
+                      order.status === 'PENDING' ? 'bg-amber-100 text-amber-700' : 
+                      order.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-700' :
+                      order.status === 'DELIVERED' ? 'bg-blue-100 text-blue-700' :
+                      'bg-rose-100 text-rose-700'
+                    }`}>
+                      {order.status}
+                    </span>
+                    {order.status === 'CANCELED' && order.cancel_reason && (
+                      <p className="text-[8px] text-rose-600 mt-2 font-bold italic max-w-[100px] mx-auto leading-tight">Reason: {order.cancel_reason}</p>
+                    )}
+                  </td>
+                  <td className="px-12 py-8">
+                    <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                      {['APPROVED', 'DELIVERED', 'CANCELED'].map(status => {
+                        const isTerminalState = order.status === 'CANCELED' || order.status === 'DELIVERED';
+                        const isDeliveredDisabled = status === 'DELIVERED' && order.status !== 'APPROVED';
+                        const isCurrentStatus = order.status === status;
+                        
+                        return (
+                          <button 
+                            key={status}
+                            disabled={isCurrentStatus || isDeliveredDisabled || isTerminalState}
+                            onClick={() => {
+                              if (status === 'CANCELED' && order.status === 'APPROVED') {
+                                setReasonModal({ isOpen: true, orderId: order.id, status: status });
+                              } else {
+                                handleUpdateOrderStatus(order.id, status);
+                              }
+                            }}
+                            className={`text-[8px] font-black px-3 py-1.5 rounded-sm border transition-all ${
+                              status === 'APPROVED' ? 'border-emerald-500/20 text-emerald-600 hover:bg-emerald-500 hover:text-white' :
+                              status === 'DELIVERED' ? 'border-blue-500/20 text-blue-600 hover:bg-blue-500 hover:text-white disabled:opacity-20 disabled:grayscale' :
+                              'border-rose-500/20 text-rose-600 hover:bg-rose-500 hover:text-white'
+                            }`}
+                          >
+                            {status}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </motion.div>
+  );
+
+  const renderAdminOverview = () => (
+    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
+      <SectionHeading sub="Boutique Management" main="Atelier Dashboard" />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <Card 
+          onClick={() => setActiveTab('inventory')}
+          className="p-16 group cursor-pointer hover:bg-ganache-rich transition-all duration-700 relative overflow-hidden"
+        >
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-silk-base/5 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+          <Package className="w-12 h-12 text-copper-accent mb-12 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+          <h3 className="text-4xl font-headline-md italic text-ganache-rich group-hover:text-silk-base transition-colors mb-6">Product Management</h3>
+          <p className="text-ganache-rich/40 group-hover:text-silk-base/40 text-sm leading-relaxed mb-12 max-w-xs transition-colors">Manage your luxury collection, update stock, and curate new creations.</p>
+          <button className="text-copper-accent text-[9px] uppercase tracking-[0.5em] font-black flex items-center gap-4 group-hover:gap-8 transition-all">
+            Enter Inventory <span>→</span>
+          </button>
+        </Card>
+
+        <Card 
+          onClick={() => setActiveTab('orders')}
+          className="p-16 group cursor-pointer hover:bg-copper-accent transition-all duration-700 relative overflow-hidden"
+        >
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-silk-base/5 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+          <ShoppingBag className="w-12 h-12 text-ganache-rich mb-12 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+          <h3 className="text-4xl font-headline-md italic text-ganache-rich group-hover:text-silk-base transition-colors mb-6">Order Management</h3>
+          <p className="text-ganache-rich/40 group-hover:text-silk-base/40 text-sm leading-relaxed mb-12 max-w-xs transition-colors">Review client orders, track fulfillment, and update delivery statuses.</p>
+          <button className="text-ganache-rich text-[9px] uppercase tracking-[0.5em] font-black flex items-center gap-4 group-hover:gap-8 transition-all group-hover:text-silk-base">
+            Review Orders <span>→</span>
+          </button>
+        </Card>
+
+        {user?.role === 'super_admin' && (
+          <Card 
+            onClick={() => setActiveTab('system')}
+            className="p-16 group cursor-pointer hover:bg-ganache-rich transition-all duration-700 relative overflow-hidden"
+          >
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-silk-base/5 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+            <Shield className="w-12 h-12 text-copper-accent mb-12 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+            <h3 className="text-4xl font-headline-md italic text-ganache-rich group-hover:text-silk-base transition-colors mb-6">System Control</h3>
+            <p className="text-ganache-rich/40 group-hover:text-silk-base/40 text-sm leading-relaxed mb-12 max-w-xs transition-colors">Super admin configuration, team management, and global boutique settings.</p>
+            <button className="text-copper-accent text-[9px] uppercase tracking-[0.5em] font-black flex items-center gap-4 group-hover:gap-8 transition-all">
+              Manage System <span>→</span>
+            </button>
+          </Card>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 opacity-60 grayscale hover:grayscale-0 transition-all duration-1000">
+        {[
+          { label: 'Pending Orders', value: orders.filter(o => o.status === 'PENDING').length, icon: Clock, sub: 'Needs Attention' },
+          { label: 'Active Products', value: metadata.total_count || products.length, icon: Package, sub: 'In Boutique' },
+          { label: 'Out of Stock', value: metadata.out_of_stock_count || 0, icon: Package, sub: 'Replenish' },
+          { label: 'Admin Team', value: 'Active', icon: Shield, sub: 'Secure Access' },
+        ].map((stat, i) => (
+          <Card key={i} className="p-10 border-none bg-white/50 backdrop-blur-sm">
+            <p className="text-ganache-rich/20 text-[8px] uppercase tracking-[0.4em] font-black mb-2">{stat.label}</p>
+            <p className="text-2xl font-headline-md text-ganache-rich tracking-tighter">{stat.value}</p>
+          </Card>
+        ))}
+      </div>
+    </motion.div>
+  );
+
   const renderAdmin = () => (
     <div className="space-y-16 min-h-screen">
-      {activeTab === 'inventory' ? renderInventoryTab() : renderProductStudio()}
+      {activeTab === 'overview' ? renderAdminOverview() :
+       activeTab === 'inventory' ? renderInventoryTab() : 
+       activeTab === 'orders' ? renderOrdersTab() : 
+       activeTab === 'system' ? renderSuperAdmin() :
+       renderProductStudio()}
     </div>
   );
 
@@ -735,14 +954,82 @@ const Dashboard = () => {
     </motion.div>
   );
 
+  const renderReasonModal = () => (
+    <AnimatePresence>
+      {reasonModal.isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-ganache-rich/80 backdrop-blur-md"
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            className="bg-white w-full max-w-md rounded-2xl p-10 shadow-xl border border-ganache-rich/5"
+          >
+            <div className="flex justify-between items-start mb-8">
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.4em] font-black text-red-600 mb-2">Protocol</p>
+                <h3 className="text-2xl font-headline-md italic text-ganache-rich tracking-tight">Cancellation Reason</h3>
+                <p className="text-[8px] text-red-600 font-black uppercase tracking-widest mt-1">Note: This will be visible to the client</p>
+              </div>
+              <button 
+                onClick={() => setReasonModal({ isOpen: false, orderId: null, status: null })}
+                className="p-2 text-ganache-rich/40 hover:text-ganache-rich transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <textarea 
+              autoFocus
+              value={cancelReason}
+              onChange={(e) => setCancelReasonText(e.target.value)}
+              placeholder="Why is this curation being canceled?"
+              className="w-full bg-silk-base/50 border border-ganache-rich/10 rounded-xl p-5 text-ganache-rich text-sm italic outline-none focus:bg-white focus:shadow-sm transition-all min-h-[120px] resize-none mb-8 placeholder:text-ganache-rich/30"
+            />
+
+            <div className="flex gap-4">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  if (!cancelReason.trim()) {
+                    toast.error("Reason required");
+                    return;
+                  }
+                  handleUpdateOrderStatus(reasonModal.orderId, reasonModal.status, cancelReason);
+                  setReasonModal({ isOpen: false, orderId: null, status: null });
+                  setCancelReasonText("");
+                }}
+                className="flex-[1.5] bg-ganache-rich text-silk-base py-4 rounded-full text-[9px] uppercase tracking-[0.4em] font-black hover:bg-red-700 transition-all shadow-xl"
+              >
+                Confirm Cancellation
+              </motion.button>
+              <motion.button 
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(45, 27, 20, 0.05)" }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setReasonModal({ isOpen: false, orderId: null, status: null })}
+                className="flex-1 bg-silk-base/50 text-ganache-rich/40 py-4 rounded-full text-[9px] uppercase tracking-[0.4em] font-black transition-all border border-ganache-rich/5"
+              >
+                Go Back
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-ganache-rich pt-32 pb-24 px-8 md:px-24 font-body-md relative overflow-x-hidden">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-[1600px] mx-auto z-10 relative">
-        {user?.role === 'super_admin' && renderSuperAdmin()}
-        {user?.role === 'admin' && renderAdmin()}
-        {user?.role === 'customer' && renderCustomer()}
+        {user?.role === 'super_admin' ? renderSuperAdmin() : (user?.role === 'admin' ? renderAdmin() : renderCustomer())}
       </motion.div>
+      {renderReasonModal()}
     </div>
   );
 };

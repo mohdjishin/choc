@@ -101,13 +101,13 @@ const ProductDetail = () => {
   const allMedia = [...(product.images || []), ...(product.videos || [])];
 
   return (
-    <div className="bg-white min-h-screen pt-32 pb-48 selection:bg-copper-accent selection:text-white">
-      <div className="max-w-[1800px] mx-auto px-8 lg:px-24">
+    <div className="min-h-screen pt-32 pb-48 selection:bg-copper-accent selection:text-white relative">
+      <div className="max-w-[1800px] mx-auto px-8 lg:px-24 relative z-10">
         
         {/* Navigation Breadcrumb */}
         <div className="flex justify-between items-center mb-16">
-          <Link to="/store" className="inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.4em] font-black text-ganache-rich/30 hover:text-ganache-rich transition-all">
-            <ArrowLeft className="w-4 h-4" /> The Boutique
+          <Link to="/store" className="inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.4em] font-black text-ganache-rich/30 hover:text-ganache-rich transition-all group">
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" /> The Boutique
           </Link>
           
           <div className="flex items-center gap-8">
@@ -116,7 +116,7 @@ const ProductDetail = () => {
               className={`flex items-center gap-2 text-[10px] uppercase tracking-widest font-black transition-all ${isInWishlist(product.id) ? 'text-red-800' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
             >
               <Heart className={`w-4 h-4 ${isInWishlist(product.id) ? 'fill-red-800' : ''}`} />
-              <span className="hidden sm:inline">{isInWishlist(product.id) ? 'Saved to Favorites' : 'Add to Wishlist'}</span>
+              <span className="hidden sm:inline">{isInWishlist(product.id) ? 'Saved' : 'Save'}</span>
             </button>
             <div className="w-[1px] h-4 bg-ganache-rich/10" />
             {navigation.prev_id && (
@@ -138,7 +138,7 @@ const ProductDetail = () => {
           
           {/* Media Gallery */}
           <div className="lg:col-span-7 space-y-8">
-            <div className="relative aspect-[4/5] bg-[#FDFBF7] overflow-hidden group">
+            <div className="relative aspect-[4/5] bg-white rounded-[2.5rem] overflow-hidden group shadow-[0_40px_100px_-20px_rgba(45,27,20,0.05)] border border-white/50">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeMedia}
@@ -169,12 +169,12 @@ const ProductDetail = () => {
             </div>
 
             {/* Thumbnails */}
-            <div className="flex gap-4 overflow-x-auto no-scrollbar">
+            <div className="flex gap-4 overflow-x-auto no-scrollbar py-2">
               {allMedia.map((media, i) => (
                 <button 
                   key={i} 
                   onClick={() => setActiveMedia(i)}
-                  className={`w-24 h-32 flex-shrink-0 overflow-hidden transition-all duration-700 ${activeMedia === i ? 'ring-2 ring-copper-accent' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`}
+                  className={`w-24 h-32 flex-shrink-0 rounded-2xl overflow-hidden transition-all duration-700 shadow-sm ${activeMedia === i ? 'ring-2 ring-copper-accent ring-offset-4 ring-offset-[#FDFBF7]' : 'opacity-40 grayscale hover:grayscale-0 hover:opacity-100'}`}
                 >
                   <img src={media} className="w-full h-full object-cover" alt="" />
                 </button>
@@ -187,7 +187,7 @@ const ProductDetail = () => {
             <div className="space-y-6">
               <p className="text-[11px] uppercase tracking-[0.8em] font-black text-copper-accent">{product.category}</p>
               <h1 className="text-7xl lg:text-8xl font-headline-lg italic text-ganache-rich tracking-tighter leading-none">{product.name}</h1>
-              <p className="text-4xl font-headline-sm italic text-ganache-rich/30 pt-4">AED {product.price?.toFixed(2)}</p>
+              <p className="text-4xl font-headline-sm italic text-ganache-rich/30 pt-4 tracking-tighter">AED {product.price?.toFixed(2)}</p>
             </div>
 
             <p className="text-lg font-body-md text-ganache-rich/60 leading-relaxed italic">
@@ -197,25 +197,25 @@ const ProductDetail = () => {
             {(!user || user.role === 'customer') && (
               <div className="space-y-10 pt-10 border-t border-ganache-rich/5">
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
-                  <div className="flex items-center justify-between border border-[#2D1B14]/10 rounded-full px-6 py-4 bg-[#FFFFFF]/50 backdrop-blur-sm shadow-inner">
-                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">-</button>
+                  <div className="flex items-center justify-between border border-ganache-rich/10 rounded-full px-6 py-4 bg-white/50 backdrop-blur-sm shadow-inner">
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center text-ganache-rich/40 hover:text-ganache-rich transition-colors font-bold text-xl">-</button>
                     <span className="w-12 text-center text-sm font-black tracking-widest">{quantity}</span>
-                    <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center text-[#2D1B14]/40 hover:text-[#2D1B14] transition-colors font-bold text-xl">+</button>
+                    <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center text-ganache-rich/40 hover:text-ganache-rich transition-colors font-bold text-xl">+</button>
                   </div>
                   
                   <button 
                     onClick={handleAddToCart}
-                    className="flex-1 bg-[#2D1B14] text-[#FDFBF7] py-6 px-12 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(45,27,20,0.2)] hover:bg-[#C19A6B] hover:shadow-[0_20px_50px_rgba(193,154,107,0.3)] transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95"
+                    className="flex-1 bg-ganache-rich text-silk-base py-6 px-12 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-2xl hover:bg-copper-accent transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95"
                   >
-                    <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Boutique Bag
+                    <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Bag
                   </button>
                 </div>
 
                 <button 
                   onClick={handleBuyNow}
-                  className="w-full bg-ganache-rich text-silk-base py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-copper-accent transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-lg"
+                  className="w-full bg-white text-ganache-rich border border-ganache-rich/10 py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-ganache-rich hover:text-white transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-sm"
                 >
-                  Buy Now
+                  Secure Checkout
                 </button>
               </div>
             )}
@@ -264,13 +264,13 @@ const ProductDetail = () => {
                 <div className={`space-y-12 ${i % 2 !== 0 ? 'lg:order-2' : ''}`}>
                   <div className="space-y-6">
                     <p className="text-[11px] uppercase tracking-[0.8em] font-black text-copper-accent">{block.tag || 'The Craft'}</p>
-                    <h2 className="text-6xl lg:text-7xl font-headline-lg italic text-ganache-rich leading-tight">{block.title}</h2>
+                    <h2 className="text-6xl lg:text-7xl font-headline-lg italic text-ganache-rich leading-tight tracking-tighter">{block.title}</h2>
                   </div>
                   <p className="text-xl font-body-md text-ganache-rich/50 italic leading-relaxed max-w-xl">
                     {block.content}
                   </p>
                 </div>
-                <div className={`relative aspect-square lg:aspect-[4/3] overflow-hidden ${i % 2 !== 0 ? 'lg:order-1' : ''}`}>
+                <div className={`relative aspect-square lg:aspect-[4/3] overflow-hidden rounded-[3rem] shadow-2xl ${i % 2 !== 0 ? 'lg:order-1' : ''}`}>
                   <LazyImage src={block.image} alt={block.title} className="w-full h-full object-cover transition-transform duration-[4000ms] hover:scale-105" />
                 </div>
               </motion.div>
@@ -304,7 +304,7 @@ const ProductDetail = () => {
         </div>
         <button 
           onClick={handleAddToCart}
-          className="bg-[#2D1B14] text-white px-8 py-4 rounded-full text-[10px] uppercase tracking-[0.3em] font-black shadow-xl"
+          className="bg-ganache-rich text-silk-base px-8 py-4 rounded-full text-[10px] uppercase tracking-[0.3em] font-black shadow-xl"
         >
           Add to Bag
         </button>

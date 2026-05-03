@@ -51,6 +51,12 @@ const Navbar = () => {
                 Boutique
                 <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-copper-accent transition-all duration-700 group-hover:w-full"></span>
               </Link>
+              {user && user.role === 'customer' && (
+                 <Link className="group relative font-label-sm text-[11px] uppercase tracking-[0.4em] text-ganache-rich/70 hover:text-ganache-rich transition-all duration-700" to="/orders">
+                  Orders
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-copper-accent transition-all duration-700 group-hover:w-full"></span>
+                </Link>
+              )}
               {user && (user.role === 'admin' || user.role === 'super_admin') && (
                  <Link className="group relative font-label-sm text-[11px] uppercase tracking-[0.4em] text-ganache-rich/70 hover:text-ganache-rich transition-all duration-700" to="/dashboard">
                   Dashboard
@@ -148,7 +154,9 @@ const Navbar = () => {
                 <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/store" onClick={() => setMobileMenuOpen(false)}>Our Story</Link>
                 {user ? (
                   <>
-                    <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/dashboard" onClick={() => setMobileMenuOpen(false)}>My Orders</Link>
+                    {user && user.role === 'customer' && (
+                      <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/orders" onClick={() => setMobileMenuOpen(false)}>My Orders</Link>
+                    )}
                     <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/dashboard" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
                     <button onClick={handleLogout} className="text-4xl font-headline-lg italic text-red-800 text-left">Logout</button>
                   </>

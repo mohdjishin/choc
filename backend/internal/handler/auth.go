@@ -11,6 +11,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/db"
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
+	"github.com/muhammedjishinjamal/choc/backend/internal/middleware"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -115,11 +116,16 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub":  user.ID.Hex(),
-		"role": user.Role,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
-	})
+	claims := &middleware.Claims{
+		UserID: user.ID.Hex(),
+		Email:  user.Email,
+		Role:   user.Role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString([]byte(h.Config.JWTSecret))
 	if err != nil {

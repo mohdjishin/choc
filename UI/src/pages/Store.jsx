@@ -62,14 +62,14 @@ const Store = () => {
   const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="min-h-screen bg-white text-[#2D1B14] selection:bg-copper-accent selection:text-white pt-32 pb-48">
-      <div className="max-w-[1800px] mx-auto px-8 lg:px-20 space-y-24">
+    <div className="min-h-screen text-ganache-rich selection:bg-copper-accent selection:text-white pt-32 pb-48 relative">
+      <div className="max-w-[1800px] mx-auto px-8 lg:px-20 relative z-10 space-y-24">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
           <div className="space-y-6">
             <motion.p 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
               className="text-[10px] uppercase tracking-[0.6em] font-bold text-copper-accent"
             >
               The Collection
@@ -89,10 +89,10 @@ const Store = () => {
                       animate={{ width: 250, opacity: 1 }}
                       exit={{ width: 0, opacity: 0 }}
                       type="text" 
-                      placeholder="Search..." 
+                      placeholder="Search curation..." 
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-transparent border-b border-ganache-rich/10 py-2 text-sm outline-none focus:border-copper-accent transition-all font-body-md"
+                      className="bg-transparent border-b border-ganache-rich/10 py-2 text-sm outline-none focus:border-copper-accent transition-all font-body-md italic"
                     />
                   )}
                 </AnimatePresence>
@@ -118,14 +118,14 @@ const Store = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 mt-6 w-56 bg-white shadow-2xl rounded-sm border border-ganache-rich/5 py-4 z-50 overflow-hidden"
+                        className="absolute right-0 mt-6 w-56 bg-white shadow-2xl rounded-2xl border border-ganache-rich/5 py-4 z-50 overflow-hidden"
                       >
                         {sortOptions.map(option => (
                           <button
                             key={option.value}
                             onClick={() => { 
                               setActiveSort(option.value); 
-                              setPage(1); // Reset to first page on sort
+                              setPage(1); 
                               setIsSortOpen(false); 
                             }}
                             className="w-full px-8 py-3 text-left hover:bg-silk-base text-[10px] uppercase tracking-widest font-bold text-ganache-rich/40 hover:text-ganache-rich transition-colors"
@@ -143,15 +143,13 @@ const Store = () => {
 
         {/* Category Navigation */}
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none lg:hidden" />
-          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
-          <div className="flex gap-12 overflow-x-auto pb-6 custom-scrollbar no-scrollbar scroll-smooth relative px-4">
+          <div className="flex gap-12 overflow-x-auto pb-6 no-scrollbar scroll-smooth relative">
             {categories.map(cat => (
               <button 
                 key={cat}
                 onClick={() => {
                   setActiveCategory(cat);
-                  setPage(1); // Reset to first page on category change
+                  setPage(1);
                 }}
                 className={`text-[11px] uppercase tracking-[0.4em] font-black whitespace-nowrap transition-all duration-500 relative pb-2 ${activeCategory === cat ? 'text-copper-accent' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
               >
@@ -164,7 +162,7 @@ const Store = () => {
           </div>
         </div>
 
-        {/* 02. PRODUCT EXHIBITION */}
+        {/* Product Exhibition */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-24 lg:gap-x-12 lg:gap-y-32">
           <AnimatePresence mode='popLayout'>
             {isLoading ? (
@@ -174,44 +172,48 @@ const Store = () => {
                 <Link to={`/product/${product.id}`} key={product.id} className="group">
                   <motion.div 
                     layout
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: i % 4 * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="space-y-8"
+                    className="space-y-10"
                   >
-                    <div className="relative aspect-[3/4] overflow-hidden bg-[#FDFBF7] transition-all duration-1000 group-hover:shadow-[0_40px_100px_rgba(45,27,20,0.05)]">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-white/50 rounded-2xl shadow-[0_20px_60px_-20px_rgba(45,27,20,0.05)] transition-all duration-1000 group-hover:shadow-[0_40px_100px_rgba(45,27,20,0.08)] group-hover:-translate-y-2">
                       <LazyImage 
                         src={product.images?.[0] || 'https://via.placeholder.com/600x800'} 
                         alt={product.name} 
-                        className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110"
                       />
                       {product.stock === 0 && (
-                        <div className="absolute inset-0 bg-white/40 backdrop-blur-sm flex items-center justify-center">
-                          <span className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/30">Unavailable</span>
+                        <div className="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center">
+                          <span className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/40">Sold Out</span>
                         </div>
                       )}
-                      <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700">
-                        <ArrowUpRight className="w-5 h-5 text-ganache-rich" />
+                      <div className="absolute inset-0 bg-ganache-rich/0 group-hover:bg-ganache-rich/5 transition-all duration-1000" />
+                      <div className="absolute bottom-10 right-10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700">
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                          <ArrowUpRight className="w-5 h-5 text-ganache-rich" />
+                        </div>
                       </div>
                     </div>
-                    <div className="space-y-3">
-                      <p className="text-[9px] uppercase tracking-[0.4em] font-bold text-copper-accent/60">{product.category}</p>
-                      <h3 className="text-2xl font-headline-md italic text-ganache-rich group-hover:text-copper-accent transition-colors duration-700">{product.name}</h3>
-                      <p className="text-xl font-headline-sm text-ganache-rich opacity-20 italic">AED {product.price?.toFixed(2)}</p>
+                    <div className="space-y-4 px-2">
+                      <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-copper-accent/60">{product.category}</p>
+                      <h3 className="text-2xl font-headline-md italic text-ganache-rich group-hover:text-copper-accent transition-colors duration-700 leading-tight">{product.name}</h3>
+                      <p className="text-xl font-headline-sm text-ganache-rich/30 italic">AED {product.price?.toFixed(2)}</p>
                     </div>
                   </motion.div>
                 </Link>
               ))
             ) : (
-              <div className="col-span-full py-60 text-center space-y-6">
-                <p className="text-4xl font-headline-lg italic text-ganache-rich/10">Archive not found</p>
-                <button onClick={() => {setActiveCategory('All'); setPage(1); setSearchQuery('');}} className="text-[10px] uppercase tracking-[0.4em] font-black text-copper-accent hover:opacity-60 transition-opacity">Reset</button>
+              <div className="col-span-full py-60 text-center space-y-8">
+                <ShoppingBag className="w-20 h-20 text-ganache-rich/5 mx-auto mb-12" />
+                <p className="text-5xl font-headline-lg italic text-ganache-rich/10 tracking-tight">Curation not found</p>
+                <button onClick={() => {setActiveCategory('All'); setPage(1); setSearchQuery('');}} className="text-[10px] uppercase tracking-[0.6em] font-black text-copper-accent hover:opacity-60 transition-opacity border-b border-copper-accent/20 pb-2">Reset Filter</button>
               </div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* 03. EDITORIAL PAGINATION */}
+        {/* Editorial Pagination */}
         {!isLoading && metadata.total_pages > 1 && (
           <div className="mt-60 pt-32 border-t border-ganache-rich/5 flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="flex items-center gap-6 order-2 md:order-1">
@@ -238,14 +240,14 @@ const Store = () => {
                       {isActive && (
                         <motion.div 
                           layoutId="active-page-circle"
-                          className="absolute inset-0 bg-[#2D1B14] rounded-full shadow-2xl shadow-[#2D1B14]/20"
+                          className="absolute inset-0 bg-ganache-rich rounded-full shadow-2xl shadow-ganache-rich/20"
                           initial={{ scale: 0, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           exit={{ scale: 0, opacity: 0 }}
                         />
                       )}
                     </AnimatePresence>
-                    <span className={`relative z-10 text-[11px] font-black tracking-widest transition-colors duration-500 ${isActive ? 'text-[#FDFBF7]' : 'text-ganache-rich/30 group-hover:text-ganache-rich'}`}>
+                    <span className={`relative z-10 text-[11px] font-black tracking-widest transition-colors duration-500 ${isActive ? 'text-silk-base' : 'text-ganache-rich/30 group-hover:text-ganache-rich'}`}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     {!isActive && (
@@ -262,7 +264,7 @@ const Store = () => {
                 disabled={page === metadata.total_pages}
                 className={`group flex items-center gap-4 text-[10px] uppercase tracking-[0.4em] font-black transition-all ${page === metadata.total_pages ? 'opacity-10 cursor-not-allowed' : 'text-ganache-rich hover:text-copper-accent'}`}
               >
-                <span className="hidden sm:inline">Next Masterpiece</span>
+                <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
