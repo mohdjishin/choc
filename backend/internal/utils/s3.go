@@ -32,7 +32,7 @@ func (u *S3Uploader) UploadFile(file multipart.File, filename string) (string, e
 
 	key := fmt.Sprintf("products/%s", filename)
 	log.Printf("Starting S3 upload: bucket=%s, key=%s, region=%s", u.Config.AWSBucket, key, u.Config.AWSRegion)
-	
+
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(u.Config.AWSBucket),
 		Key:    aws.String(key),
@@ -45,10 +45,6 @@ func (u *S3Uploader) UploadFile(file multipart.File, filename string) (string, e
 	}
 
 	finalURL := result.Location
-	if u.Config.CDNURL != "" {
-		finalURL = fmt.Sprintf("%s/%s", u.Config.CDNURL, key)
-		log.Printf("Using CDN URL: %s", finalURL)
-	}
 
 	log.Printf("S3 upload successful. URL: %s", finalURL)
 	return finalURL, nil
