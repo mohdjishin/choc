@@ -21,6 +21,20 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+// Shared UI Components (Defined outside to prevent re-mounting and focus loss)
+const Card = ({ children, className = "" }) => (
+  <div className={`bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(45,27,20,0.05)] border border-white/50 ${className}`}>
+    {children}
+  </div>
+);
+
+const SectionHeading = ({ sub, main }) => (
+  <div className="mb-12">
+    <p className="text-[10px] uppercase tracking-[0.6em] font-bold text-copper-accent mb-4">{sub}</p>
+    <h1 className="text-6xl font-headline-lg italic text-ganache-rich tracking-tight leading-tight">{main}</h1>
+  </div>
+);
+
 const Dashboard = () => {
   const { user, token } = useAuth();
   const [activeTab, setActiveTab] = useState('inventory'); 
@@ -179,20 +193,6 @@ const Dashboard = () => {
       toast.error('Delete failed', { id: deleteToast });
     }
   };
-
-  // Shared UI Components to ensure uniformity
-  const Card = ({ children, className = "" }) => (
-    <div className={`bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(45,27,20,0.05)] border border-white/50 ${className}`}>
-      {children}
-    </div>
-  );
-
-  const SectionHeading = ({ sub, main }) => (
-    <div className="mb-12">
-      <p className="text-[10px] uppercase tracking-[0.6em] font-bold text-copper-accent mb-4">{sub}</p>
-      <h1 className="text-6xl font-headline-lg italic text-ganache-rich tracking-tight leading-tight">{main}</h1>
-    </div>
-  );
 
   const renderSuperAdmin = () => (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
