@@ -43,9 +43,9 @@
   .shimmer {
     background: linear-gradient(
       90deg,
-      rgba(45, 27, 20, 0.03) 25%,
-      rgba(45, 27, 20, 0.08) 50%,
-      rgba(45, 27, 20, 0.03) 75%
+      rgba(45, 27, 20, 0.05) 25%,
+      rgba(45, 27, 20, 0.12) 50%,
+      rgba(45, 27, 20, 0.05) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite linear;

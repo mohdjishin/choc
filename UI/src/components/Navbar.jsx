@@ -34,7 +34,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 backdrop-blur-md ${isScrolled ? 'bg-silk-base/95 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.03)] border-b border-ganache-rich/5' : 'bg-silk-base/20 py-6 lg:py-8 border-b border-ganache-rich/0'}`}>
+      <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 backdrop-blur-md ${isScrolled ? 'bg-silk-base/95 py-4 shadow-[0_10px_40px_rgba(45,23,31,0.03)] border-b border-ganache-rich/5' : 'bg-silk-base/40 py-6 lg:py-8 border-b border-ganache-rich/0'}`}>
         <div className="flex justify-between items-center px-6 lg:px-12 max-w-[1440px] mx-auto relative">
           {/* Left: Desktop Links */}
           <div className="w-1/3 flex justify-start items-center">

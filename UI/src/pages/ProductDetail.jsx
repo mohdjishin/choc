@@ -213,7 +213,7 @@ const ProductDetail = () => {
 
                 <button 
                   onClick={handleBuyNow}
-                  className="w-full bg-silk-base/50 backdrop-blur-sm border border-[#2D1B14] text-[#2D1B14] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-[#2D1B14] hover:text-white transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-sm"
+                  className="w-full bg-ganache-rich text-silk-base py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-copper-accent transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-lg"
                 >
                   Buy Now
                 </button>
