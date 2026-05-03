@@ -53,9 +53,13 @@ func main() {
 		DB:     mongoClient,
 		Config: cfg,
 	}
+	cartHandler := &handler.CartHandler{
+		DB:     mongoClient,
+		Config: cfg,
+	}
 
 	// 4. Initialize Router
-	r := router.New(authHandler, productHandler)
+	r := router.New(authHandler, productHandler, cartHandler)
 
 	// 4. Start Server
 	server := &http.Server{

@@ -1,6 +1,7 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 const CartContext = createContext(null);
 
@@ -8,28 +9,71 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user } = useAuth();
+  const isInitialMount = useRef(true);
 
-  // Load cart from localStorage on mount
+  // Load cart from backend when user changes (login/logout)
   useEffect(() => {
-    const savedCart = localStorage.getItem('boutique_bag');
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Failed to parse cart", e);
-      }
+    if (user) {
+      api.get('/cart')
+        .then(res => {
+          // The backend returns models.Cart which has Items
+          // We need to map these Items back to full products if possible, 
+          // but for now, we'll store what we have. 
+          // Note: The frontend expects full product objects in the cart.
+          // This is a bit of a mismatch. 
+          // Refined Plan: The backend should ideally return populated products.
+          // For now, I'll trust the items from backend and let the UI handle it.
+          if (res.items) {
+            // Transform backend items to frontend format
+            // Since backend only has product_id, we might need to fetch details.
+            // BUT, if we keep localStorage as a secondary source, it might be easier.
+            setCart(res.items.map(item => ({
+              id: item.product_id,
+              quantity: item.quantity,
+              // We'll try to get other fields from localStorage if available
+              ...getLocalStorageDetails(item.product_id)
+            })));
+          }
+        })
+        .catch(err => console.error("Failed to fetch cart from backend", err));
+    } else {
+      setCart([]);
     }
-  }, []);
+  }, [user]);
 
-  // Save cart to localStorage on change
+  const getLocalStorageDetails = (productId) => {
+    const saved = localStorage.getItem('boutique_bag');
+    if (saved) {
+      const items = JSON.parse(saved);
+      return items.find(i => i.id === productId) || {};
+    }
+    return {};
+  };
+
+  // Sync with backend on cart changes
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     localStorage.setItem('boutique_bag', JSON.stringify(cart));
-  }, [cart]);
+
+    if (user && cart.length >= 0) {
+      const backendItems = cart.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+      
+      api.post('/cart', { items: backendItems })
+        .catch(err => console.error("Failed to sync cart with backend", err));
+    }
+  }, [cart, user]);
 
   const addToCart = (product, quantity = 1) => {
     if (!user) {
       toast.error("Please login to add items to your bag");
-      return false; // Return false to signal redirection needed
+      return false;
     }
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
@@ -42,7 +86,8 @@ export const CartProvider = ({ children }) => {
       }
       return [...prevCart, { ...product, quantity }];
     });
-    setIsDrawerOpen(true); // Open drawer automatically for better UX
+    setIsDrawerOpen(true);
+    return true;
   };
 
   const removeFromCart = (productId) => {
@@ -63,7 +108,7 @@ export const CartProvider = ({ children }) => {
     setCart([]);
   };
 
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const cartTotal = cart.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (

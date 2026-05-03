@@ -85,7 +85,7 @@ const Navbar = () => {
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-copper-accent text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-lg"
+                    className="absolute -top-2 -right-2 w-5 h-5 bg-[#C19A6B] text-white text-[10px] font-black flex items-center justify-center rounded-full shadow-xl z-10"
                   >
                     {itemCount}
                   </motion.span>

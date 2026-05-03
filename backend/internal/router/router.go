@@ -12,7 +12,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 )
 
-func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandler) *chi.Mux {
+func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler) *chi.Mux {
 	r := chi.NewRouter()
 
 	// CORS configuration
@@ -86,6 +86,8 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 			r.Get("/profile", func(w http.ResponseWriter, r *http.Request) {
 				w.Write([]byte("Welcome to your Profile"))
 			})
+			r.Get("/cart", cartHandler.GetCart)
+			r.Post("/cart", cartHandler.UpdateCart)
 		})
 	})
 
