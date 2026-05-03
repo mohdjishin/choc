@@ -16,7 +16,15 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 	r := chi.NewRouter()
 
 	// CORS configuration
-	origins := strings.Split(authHandler.Config.AllowedOrigins, ",")
+	rawOrigins := strings.Split(authHandler.Config.AllowedOrigins, ",")
+	var origins []string
+	for _, o := range rawOrigins {
+		trimmed := strings.TrimSpace(o)
+		if trimmed != "" {
+			origins = append(origins, trimmed)
+		}
+	}
+
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   origins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
