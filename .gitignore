@@ -25,3 +25,17 @@ dist-ssr
 
 # Sensitive configuration
 backend/config.json
+backend/.env
+
+# Binaries
+backend/app
+backend/api
+**/venv/
+__pycache__/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
