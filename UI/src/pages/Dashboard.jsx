@@ -240,8 +240,8 @@ const Dashboard = () => {
           { label: 'Admins', value: '12', icon: Shield, sub: 'Admin Team' },
           { label: 'System Status', value: 'Normal', icon: Package, sub: 'All Systems Running' },
         ].map((stat, i) => (
-          <Card key={i} className="p-12 relative overflow-hidden group hover:-translate-y-2 transition-all duration-700">
-            <div className="absolute -right-4 -top-4 w-24 h-24 bg-silk-base/50 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+          <Card key={i} className="p-6 sm:p-12 relative overflow-hidden group hover:-translate-y-2 transition-all duration-700">
+            <div className="absolute -right-4 -top-4 w-20 sm:w-24 h-20 sm:h-24 bg-silk-base/50 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
             <stat.icon className="w-6 h-6 text-copper-accent mb-10 opacity-30 group-hover:opacity-100 transition-opacity" />
             <p className="text-ganache-rich/20 text-[9px] uppercase tracking-[0.4em] font-black mb-3">{stat.label}</p>
             <p className="text-4xl font-headline-md text-ganache-rich tracking-tighter mb-4">{stat.value}</p>
@@ -250,7 +250,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <Card className="p-16">
+      <Card className="p-6 sm:p-16">
         <SectionHeading sub="System Settings" main="Manage" />
         <div className="space-y-4">
           {[
@@ -295,20 +295,20 @@ const Dashboard = () => {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="p-12 pb-0 flex justify-between items-center">
-          <h3 className="text-2xl font-headline-md italic text-ganache-rich opacity-40">All Items</h3>
-          <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-ganache-rich/20">{metadata.total_count || products.length} Total Items</span>
+        <div className="p-6 sm:p-12 pb-0 flex justify-between items-center">
+          <h3 className="text-xl sm:text-2xl font-headline-md italic text-ganache-rich opacity-40">All Items</h3>
+          <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-ganache-rich/20">{metadata.total_count || products.length} Total</span>
         </div>
 
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-left border-none">
             <thead>
               <tr className="bg-silk-base/10 border-none">
-                <th className="px-12 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 border-none">Product</th>
-                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 border-none">Category</th>
-                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right border-none">Price</th>
-                <th className="px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-center border-none">Stock</th>
-                <th className="px-12 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right border-none">Actions</th>
+                <th className="px-4 sm:px-12 py-6 sm:py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 border-none">Product</th>
+                <th className="px-4 sm:px-8 py-6 sm:py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 border-none">Category</th>
+                <th className="px-4 sm:px-8 py-6 sm:py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right border-none">Price</th>
+                <th className="hidden sm:table-cell px-8 py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-center border-none">Stock</th>
+                <th className="px-4 sm:px-12 py-6 sm:py-8 text-[9px] uppercase tracking-[0.4em] font-black text-ganache-rich/20 text-right border-none">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ganache-rich/[0.01]">
@@ -343,22 +343,22 @@ const Dashboard = () => {
                 ))
               ) : products.map((prod) => (
                 <tr key={prod.id} className="group hover:bg-silk-base/20 transition-all duration-500 cursor-default">
-                  <td className="px-12 py-8">
-                    <div className="flex items-center gap-8">
-                      <div className="w-16 h-16 rounded-3xl bg-silk-base overflow-hidden border border-ganache-rich/5 shadow-sm group-hover:scale-105 transition-transform duration-700">
-                        {prod.images?.[0] ? <img src={prod.images[0]} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-copper-accent/30 italic text-xl font-headline-md">{prod.name?.charAt(0)}</div>}
+                  <td className="px-4 sm:px-12 py-6 sm:py-8">
+                    <div className="flex items-center gap-4 sm:gap-8">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-silk-base overflow-hidden border border-ganache-rich/5 shadow-sm group-hover:scale-105 transition-transform duration-700">
+                        {prod.images?.[0] ? <img src={prod.images[0]} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-copper-accent/30 italic text-lg font-headline-md">{prod.name?.charAt(0)}</div>}
                       </div>
                       <div>
-                        <p className="text-ganache-rich font-bold text-[14px] uppercase tracking-widest leading-none mb-2">{prod.name}</p>
-                        <p className="text-ganache-rich/20 text-[9px] uppercase tracking-widest font-medium">Ref: {prod.id?.slice(-6)}</p>
+                        <p className="text-ganache-rich font-bold text-[11px] sm:text-[14px] uppercase tracking-widest leading-none mb-1 sm:mb-2 truncate max-w-[80px] sm:max-w-none">{prod.name}</p>
+                        <p className="text-ganache-rich/20 text-[8px] uppercase tracking-widest font-medium">Ref: {prod.id?.slice(-6)}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-8">
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-ganache-rich/40 bg-silk-base/40 px-5 py-2 rounded-full border border-ganache-rich/5">{prod.category}</span>
+                  <td className="px-4 sm:px-8 py-6 sm:py-8">
+                    <span className="text-[8px] sm:text-[10px] uppercase tracking-widest font-bold text-ganache-rich/40 bg-silk-base/40 px-3 sm:px-5 py-1 sm:py-2 rounded-full border border-ganache-rich/5">{prod.category}</span>
                   </td>
-                  <td className="px-8 py-8 text-right text-2xl font-headline-md italic text-ganache-rich">AED {prod.price?.toFixed(2)}</td>
-                  <td className="px-8 py-8 text-center">
+                  <td className="px-4 sm:px-8 py-6 sm:py-8 text-right text-lg sm:text-2xl font-headline-md italic text-ganache-rich">AED {prod.price?.toFixed(2)}</td>
+                  <td className="hidden sm:table-cell px-8 py-8 text-center">
                     <div className="flex flex-col items-center">
                       <span className="text-[12px] font-bold text-ganache-rich/40 mb-3">{prod.stock}</span>
                       <div className="w-16 h-[2px] bg-ganache-rich/5 rounded-full mt-2 overflow-hidden">
@@ -366,9 +366,9 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-12 py-8 text-right flex justify-end gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
-                    <button onClick={() => startEditing(prod)} className="w-12 h-12 rounded-2xl bg-white shadow-xl border border-ganache-rich/5 flex items-center justify-center text-ganache-rich hover:bg-ganache-rich hover:text-white transition-all"><Settings className="w-5 h-5" /></button>
-                    <button onClick={() => handleDeleteProduct(prod.id)} className="w-12 h-12 rounded-2xl bg-white shadow-xl border border-ganache-rich/5 flex items-center justify-center text-red-800/40 hover:bg-red-800 hover:text-white transition-all"><X className="w-5 h-5" /></button>
+                  <td className="px-4 sm:px-12 py-6 sm:py-8 text-right flex justify-end gap-2 sm:gap-4 group-hover:opacity-100 sm:opacity-0 transition-all duration-500">
+                    <button onClick={() => startEditing(prod)} className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-lg border border-ganache-rich/5 flex items-center justify-center text-ganache-rich hover:bg-ganache-rich hover:text-white transition-all"><Settings className="w-4 h-4 sm:w-5 sm:h-5" /></button>
+                    <button onClick={() => handleDeleteProduct(prod.id)} className="w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-lg border border-ganache-rich/5 flex items-center justify-center text-red-800/40 hover:bg-red-800 hover:text-white transition-all"><X className="w-4 h-4 sm:w-5 sm:h-5" /></button>
                   </td>
                 </tr>
               ))}
@@ -431,7 +431,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 h-full min-h-[800px]">
         {/* Left: Redesigned Input Form */}
-        <Card className="md:col-span-7 p-20 flex flex-col border border-ganache-rich/5">
+        <Card className="md:col-span-7 p-6 sm:p-20 flex flex-col border border-ganache-rich/5">
           <SectionHeading sub={editingProduct ? "Edit Item" : "New Item"} main={editingProduct ? "Edit" : "Create"} />
           <form onSubmit={handleCreateProduct} className="flex-1 flex flex-col mt-12 space-y-16">
             <div className="space-y-4">
@@ -591,12 +591,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mt-auto pt-12">
-              <div className="space-y-4">
-                <label className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/30 ml-8 italic">Stock Count</label>
-                <input type="number" required value={productForm.stock} onChange={(e) => setProductForm({...productForm, stock: e.target.value})} className="w-full max-w-[160px] bg-white/40 border border-ganache-rich/5 py-5 px-10 rounded-full text-ganache-rich text-[11px] font-bold tracking-widest outline-none" placeholder="Qty" />
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-auto pt-12 gap-8">
+              <div className="space-y-4 w-full sm:w-auto">
+                <label className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/30 ml-4 sm:ml-8 italic">Stock Count</label>
+                <input type="number" required value={productForm.stock} onChange={(e) => setProductForm({...productForm, stock: e.target.value})} className="w-full sm:max-w-[160px] bg-white/40 border border-ganache-rich/5 py-4 sm:py-5 px-8 sm:px-10 rounded-full text-ganache-rich text-[11px] font-bold tracking-widest outline-none" placeholder="Qty" />
               </div>
-              <button disabled={isSubmitting} className="group bg-ganache-rich text-silk-base py-8 px-20 rounded-[2.5rem] font-bold text-[10px] uppercase tracking-[0.6em] shadow-[0_40px_100px_rgba(45,27,20,0.2)] hover:bg-copper-accent transition-all flex items-center gap-6 disabled:opacity-50">
+              <button disabled={isSubmitting} className="w-full sm:w-auto group bg-ganache-rich text-silk-base py-6 sm:py-8 px-12 sm:px-20 rounded-2xl sm:rounded-[2.5rem] font-bold text-[10px] uppercase tracking-[0.6em] shadow-[0_40px_100px_rgba(45,27,20,0.2)] hover:bg-copper-accent transition-all flex items-center justify-center gap-6 disabled:opacity-50">
                 {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Shield className="w-4 h-4 group-hover:scale-125 transition-transform" /> {editingProduct ? 'Save Changes' : 'Save Product'}</>}
               </button>
             </div>
