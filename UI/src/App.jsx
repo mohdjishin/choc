@@ -6,12 +6,14 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Footer from './components/Footer'
 import { Toaster } from 'react-hot-toast';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
-import Store from './pages/Store';
-import ProductDetail from './pages/ProductDetail';
-import Dashboard from './pages/Dashboard';
+import Loading from './components/Loading';
+
+const Home = React.lazy(() => import('./pages/Home'));
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
+const Store = React.lazy(() => import('./pages/Store'));
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 
 function AppContent() {
   const location = useLocation();
@@ -36,33 +38,36 @@ function AppContent() {
         }}
       />
       {!isAuthPage && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-        <Route path="/unauthorized" element={
-          <div className="flex flex-col items-center justify-center h-[70vh] text-[#2D1B14]">
-            <h1 className="text-4xl font-serif italic text-ganache-rich">Unauthorized Access</h1>
-            <p className="mt-4 font-sans uppercase tracking-widest text-xs text-ganache-rich/60">You do not have permission to view this page.</p>
-            <button 
-              onClick={() => window.history.back()}
-              className="mt-8 border border-[#C19A6B] px-8 py-3 text-[#C19A6B] hover:bg-[#C19A6B] hover:text-white transition-all uppercase tracking-widest text-xs font-bold"
-            >
-              Go Back
-            </button>
-          </div>
-        } />
-      </Routes>
+      <React.Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/unauthorized" element={
+            <div className="flex flex-col items-center justify-center h-[70vh] text-[#2D1B14]">
+              <h1 className="text-4xl font-serif italic text-ganache-rich">Unauthorized Access</h1>
+              <p className="mt-4 font-sans uppercase tracking-widest text-xs text-ganache-rich/60">You do not have permission to view this page.</p>
+              <button 
+                onClick={() => window.history.back()}
+                className="mt-8 border border-[#C19A6B] px-8 py-3 text-[#C19A6B] hover:bg-[#C19A6B] hover:text-white transition-all uppercase tracking-widest text-xs font-bold"
+              >
+                Go Back
+              </button>
+            </div>
+          } />
+        </Routes>
+      </React.Suspense>
       {!isAuthPage && <Footer />}
     </div>
   )

@@ -41,12 +41,16 @@ const Dashboard = () => {
 
   const [products, setProducts] = useState([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [metadata, setMetadata] = useState({ total_pages: 1 });
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 1) => {
     setIsLoadingProducts(true);
     try {
-      const data = await api.get('/products');
-      setProducts(data);
+      const data = await api.get(`/products?page=${page}&limit=10`);
+      setProducts(data.products || []);
+      setMetadata(data.metadata || { total_pages: 1 });
+      setCurrentPage(page);
     } catch (error) {
       toast.error('Failed to fetch products');
     } finally {
@@ -56,7 +60,7 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     if (user?.role === 'admin' || user?.role === 'super_admin') {
-      fetchProducts();
+      fetchProducts(1);
     }
   }, [user]);
 
@@ -298,6 +302,42 @@ const Dashboard = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {metadata.total_pages > 1 && (
+          <div className="p-8 border-t border-ganache-rich/[0.01] flex justify-center items-center gap-12">
+            <button 
+              onClick={() => fetchProducts(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`p-4 rounded-full transition-all ${currentPage === 1 ? 'text-ganache-rich/10' : 'text-ganache-rich hover:bg-silk-base'}`}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-center gap-6">
+              {[...Array(metadata.total_pages)].map((_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => fetchProducts(i + 1)}
+                  className={`text-[10px] uppercase tracking-[0.4em] font-black transition-all pb-1 relative ${currentPage === i + 1 ? 'text-copper-accent' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                  {currentPage === i + 1 && (
+                    <motion.div layoutId="dash-pagination-underline" className="absolute bottom-0 left-0 w-full h-[1px] bg-copper-accent" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => fetchProducts(currentPage + 1)}
+              disabled={currentPage === metadata.total_pages}
+              className={`p-4 rounded-full transition-all ${currentPage === metadata.total_pages ? 'text-ganache-rich/10' : 'text-ganache-rich hover:bg-silk-base'}`}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </Card>
     </motion.div>
   );

@@ -54,6 +54,7 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 	r.Post("/auth/register", authHandler.Register)
 	r.Post("/auth/login", authHandler.Login)
 	r.Get("/products", productHandler.ListProducts)
+	r.Get("/products/detail", productHandler.GetProduct)
 
 	// Protected Routes
 	r.Group(func(r chi.Router) {

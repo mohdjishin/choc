@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import api from '../utils/api';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
+import LazyImage from '../components/LazyImage';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -14,7 +15,11 @@ const Home = () => {
     window.addEventListener('scroll', handleScroll);
     
     api.get('/products')
-      .then(data => setFeaturedProducts(data.slice(0, 4)))
+      .then(res => {
+        // The API now returns { products, metadata }
+        const products = res.products || [];
+        setFeaturedProducts(products.slice(0, 4));
+      })
       .catch(err => console.error(err));
 
     return () => window.removeEventListener('scroll', handleScroll);
@@ -54,7 +59,7 @@ const Home = () => {
                   viewport={{ once: true }}
                 >
                   <div className="relative aspect-[4/5] rounded-sm overflow-hidden mb-8 bg-silk-base/50 group-hover:shadow-[0_40px_100px_rgba(45,27,20,0.1)] transition-all duration-1000">
-                    <img 
+                    <LazyImage 
                       src={product.images?.[0] || 'https://via.placeholder.com/600x800'} 
                       alt={product.name} 
                       className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"

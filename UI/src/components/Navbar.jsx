@@ -46,11 +46,7 @@ const Navbar = () => {
             
             <div className="hidden lg:flex items-center gap-10">
               <Link className="group relative font-label-sm text-[11px] uppercase tracking-[0.4em] text-ganache-rich/70 hover:text-ganache-rich transition-all duration-700" to="/store">
-                Collections
-                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-copper-accent transition-all duration-700 group-hover:w-full"></span>
-              </Link>
-              <Link className="group relative font-label-sm text-[11px] uppercase tracking-[0.4em] text-ganache-rich/70 hover:text-ganache-rich transition-all duration-700" to="/">
-                The Atelier
+                Boutique
                 <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-copper-accent transition-all duration-700 group-hover:w-full"></span>
               </Link>
               {user && (user.role === 'admin' || user.role === 'super_admin') && (
@@ -130,8 +126,8 @@ const Navbar = () => {
               </div>
 
               <div className="flex flex-col gap-8">
-                <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/" onClick={() => setMobileMenuOpen(false)}>Shop</Link>
-                <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/" onClick={() => setMobileMenuOpen(false)}>Our Story</Link>
+                <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/store" onClick={() => setMobileMenuOpen(false)}>Shop</Link>
+                <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/store" onClick={() => setMobileMenuOpen(false)}>Our Story</Link>
                 {user ? (
                   <>
                     <Link className="text-4xl font-headline-lg italic text-ganache-rich" to="/dashboard" onClick={() => setMobileMenuOpen(false)}>My Orders</Link>

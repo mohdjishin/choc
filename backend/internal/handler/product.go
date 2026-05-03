@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/muhammedjishinjamal/choc/backend/internal/config"
@@ -12,6 +13,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type ProductHandler struct {
@@ -73,8 +75,60 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 	defer cancel()
 
+	// Get pagination, filter, and sort parameters
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
+	category := r.URL.Query().Get("category")
+	sort := r.URL.Query().Get("sort")
+	stockOnly := r.URL.Query().Get("stock") == "true"
+
+	page := 1
+	limit := 12 // Default limit
+
+	if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+		page = p
+	}
+	if l, err := strconv.Atoi(limitStr); err == nil && l > 0 {
+		limit = l
+	}
+
 	collection := h.DB.Database.Collection("products")
-	cursor, err := collection.Find(ctx, bson.M{})
+
+	// Build filter
+	filter := bson.M{}
+	if category != "" && category != "All" {
+		filter["category"] = category
+	}
+	if stockOnly {
+		filter["stock"] = bson.M{"$gt": 0}
+	}
+
+	// Count total products for metadata
+	totalCount, err := collection.CountDocuments(ctx, filter)
+	if err != nil {
+		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to count products")
+		return
+	}
+
+	// Build Sort
+	sortBson := bson.M{"created_at": -1} // Default newest
+	switch sort {
+	case "price_asc":
+		sortBson = bson.M{"price": 1}
+	case "price_desc":
+		sortBson = bson.M{"price": -1}
+	case "oldest":
+		sortBson = bson.M{"created_at": 1}
+	}
+
+	// Find with pagination
+	skip := (page - 1) * limit
+	findOptions := options.Find().
+		SetSkip(int64(skip)).
+		SetLimit(int64(limit)).
+		SetSort(sortBson)
+
+	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to fetch products")
 		return
@@ -87,7 +141,60 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.JSONResponse(w, http.StatusOK, products)
+	response := map[string]interface{}{
+		"products": products,
+		"metadata": map[string]interface{}{
+			"current_page": page,
+			"limit":        limit,
+			"total_count":  totalCount,
+			"total_pages":  (int(totalCount) + limit - 1) / limit,
+		},
+	}
+
+	utils.JSONResponse(w, http.StatusOK, response)
+}
+
+func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		utils.ErrorResponse(w, http.StatusBadRequest, "Product ID is required")
+		return
+	}
+
+	id, err := primitive.ObjectIDFromHex(idStr)
+	if err != nil {
+		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Product ID")
+		return
+	}
+
+	collection := h.DB.Database.Collection("products")
+	var product models.Product
+	err = collection.FindOne(r.Context(), bson.M{"_id": id}).Decode(&product)
+	if err != nil {
+		utils.ErrorResponse(w, http.StatusNotFound, "Product not found")
+		return
+	}
+
+	// Fetch next and previous product IDs for pagination
+	var prevProduct, nextProduct models.Product
+	
+	// Previous: Newest product created before this one
+	collection.FindOne(r.Context(), bson.M{"created_at": bson.M{"$lt": product.CreatedAt}}, options.FindOne().SetSort(bson.M{"created_at": -1})).Decode(&prevProduct)
+	
+	// Next: Oldest product created after this one
+	collection.FindOne(r.Context(), bson.M{"created_at": bson.M{"$gt": product.CreatedAt}}, options.FindOne().SetSort(bson.M{"created_at": 1})).Decode(&nextProduct)
+
+	response := map[string]interface{}{
+		"product": product,
+		"navigation": map[string]interface{}{
+			"prev_id": prevProduct.ID.Hex(),
+			"next_id": nextProduct.ID.Hex(),
+		},
+	}
+	if prevProduct.ID.IsZero() { response["navigation"].(map[string]interface{})["prev_id"] = nil }
+	if nextProduct.ID.IsZero() { response["navigation"].(map[string]interface{})["next_id"] = nil }
+
+	utils.JSONResponse(w, http.StatusOK, response)
 }
 
 func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {

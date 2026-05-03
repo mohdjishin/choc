@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import LazyImage from './LazyImage'
 
 const Hero = ({ scrollY }) => {
   const { user } = useAuth()
@@ -62,7 +63,7 @@ const Hero = ({ scrollY }) => {
             </p>
           </div>
           <div className="pt-6 lg:pt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">
-            <Link to="/" className="w-full sm:w-auto bg-[#2D1B14] text-white px-14 py-6 font-label-sm text-[11px] uppercase tracking-[0.3em] hover:bg-copper-accent transition-all duration-700 shadow-[0_30px_60px_rgba(45,43,31,0.2)] hover:shadow-[0_40px_80px_rgba(45,43,31,0.3)] flex items-center justify-center gap-4 group rounded-sm font-bold no-underline">
+            <Link to="/store" className="w-full sm:w-auto bg-[#2D1B14] text-white px-14 py-6 font-label-sm text-[11px] uppercase tracking-[0.3em] hover:bg-copper-accent transition-all duration-700 shadow-[0_30px_60px_rgba(45,43,31,0.2)] hover:shadow-[0_40px_80px_rgba(45,43,31,0.3)] flex items-center justify-center gap-4 group rounded-sm font-bold no-underline">
               See All Products
               <span className="material-symbols-outlined text-sm group-hover:translate-x-2 transition-transform duration-500">east</span>
             </Link>
@@ -78,7 +79,7 @@ const Hero = ({ scrollY }) => {
               transform: calculateTransform(0, 0.12, -0.015, 60, 80)
             }}
           >
-            <img 
+            <LazyImage 
               alt="Jabal Al Ayham Brand Card" 
               className="w-full h-auto object-cover hover:scale-105 transition-transform duration-1000" 
               src="/assets/brand-card.png"
@@ -93,7 +94,7 @@ const Hero = ({ scrollY }) => {
               transform: calculateTransform(0, -0.08, 0.02, 120, 200)
             }}
           >
-            <img 
+            <LazyImage 
               alt="Artisanal Luxury Chocolate Truffles" 
               className="w-full h-auto object-cover hover:scale-110 transition-transform duration-1000" 
               src="/assets/premium-chocolate.png"

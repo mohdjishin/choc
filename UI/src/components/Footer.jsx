@@ -22,7 +22,7 @@ const Footer = () => {
 
         {/* Minimal Navigation */}
         <nav className="flex flex-wrap justify-center gap-x-16 gap-y-6">
-          {['Collections', 'The Atelier', 'Boutique', 'Heritage'].map((item) => (
+          {['Boutique', 'Heritage'].map((item) => (
             <a 
               key={item} 
               href="#" 
