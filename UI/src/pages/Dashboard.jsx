@@ -90,6 +90,7 @@ const Dashboard = () => {
       const data = await api.post('/products/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      console.log('Upload successful:', data.url);
       const currentMedia = [...productForm[type]];
       const emptyIndex = currentMedia.findIndex(url => url === '');
       if (emptyIndex !== -1) currentMedia[emptyIndex] = data.url;

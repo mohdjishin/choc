@@ -15,7 +15,7 @@ type Config struct {
 	DBName         string `json:"db_name"`
 	JWTSecret      string `json:"jwt_secret"`
 	AWSRegion      string `json:"aws_region"`
-	AWSBucket      string `json:"aws_bucket"`
+	AWSBucket      string `json:"s3_bucket_name"`
 	AWSAccessKey   string `json:"aws_access_key"`
 	AWSSecretKey   string `json:"aws_secret_key"`
 	CDNURL         string `json:"cdn_url"`
@@ -67,7 +67,7 @@ func Load() *Config {
 }
 
 func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
+	if value, ok := os.LookupEnv(key); ok && value != "" {
 		return value
 	}
 	return fallback
