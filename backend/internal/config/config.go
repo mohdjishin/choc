@@ -33,7 +33,7 @@ func Load() *Config {
 		AWSBucket:      "choc-media",
 		AWSAccessKey:   "test",
 		AWSSecretKey:   "test",
-		CDNURL:         "http://localhost:4566",
+		CDNURL:         "",
 	}
 
 	// 2. Try loading from .env for local development
