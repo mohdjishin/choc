@@ -617,50 +617,48 @@ const Dashboard = () => {
                         </div>
                       )}
 
-                      <div className="absolute inset-0 bg-ganache-rich/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col items-center justify-center p-8 gap-6 z-30">
-                        <div className="w-full space-y-4">
-                          <p className="text-[8px] uppercase tracking-[0.4em] font-black text-white/40 text-center">Image URL</p>
+                      <div className="absolute inset-0 bg-ganache-rich/90 backdrop-blur-[4px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-6 gap-6 z-30">
+                        <div className="w-full space-y-3">
+                          <p className="text-[7px] uppercase tracking-[0.4em] font-black text-silk-base/40 text-center">Source Link</p>
                           <input 
                             type="text" 
                             value={url} 
-                            placeholder="Enter URL..." 
+                            placeholder="Direct URL..." 
                             onChange={(e) => handleMediaChange(i, e.target.value, 'images')} 
-                            className="w-full bg-white/10 border border-white/20 py-3 px-6 rounded-full text-[9px] text-white outline-none focus:bg-white/20 focus:border-white/40 transition-all text-center" 
+                            className="w-full bg-white/5 border border-white/10 py-2.5 px-5 rounded-full text-[9px] text-silk-base outline-none focus:bg-white/10 focus:border-white/30 transition-all text-center placeholder:text-white/10" 
                           />
                         </div>
 
-                        <div className="flex items-center gap-4">
-                          <label className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white hover:text-ganache-rich transition-all cursor-pointer shadow-xl">
-                            <UploadCloud className="w-5 h-5" />
+                        <div className="flex flex-wrap items-center justify-center gap-3 max-w-[180px]">
+                          <label className="w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center hover:bg-copper-accent hover:text-white transition-all cursor-pointer shadow-2xl active:scale-90">
+                            <UploadCloud className="w-4 h-4" />
                             <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'images')} />
                           </label>
                           
-                          <div className="h-8 w-[1px] bg-white/10 mx-2"></div>
-
                           <button 
                             type="button" 
                             onClick={() => moveMedia(i, 'left', 'images')} 
                             disabled={i === 0}
-                            className={`w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center transition-all shadow-xl ${i === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-white hover:text-ganache-rich'}`}
+                            className={`w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center transition-all shadow-2xl active:scale-90 ${i === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent hover:text-white'}`}
                           >
-                            <ChevronLeft className="w-5 h-5" />
-                          </button>
-
-                          <button 
-                            type="button" 
-                            onClick={() => removeMedia(i, 'images')} 
-                            className="w-12 h-12 rounded-full bg-red-500/20 text-red-200 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-xl"
-                          >
-                            <Trash2 className="w-5 h-5" />
+                            <ChevronLeft className="w-4 h-4" />
                           </button>
 
                           <button 
                             type="button" 
                             onClick={() => moveMedia(i, 'right', 'images')} 
                             disabled={i === productForm.images.length - 1}
-                            className={`w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center transition-all shadow-xl ${i === productForm.images.length - 1 ? 'opacity-20 pointer-events-none' : 'hover:bg-white hover:text-ganache-rich'}`}
+                            className={`w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center transition-all shadow-2xl active:scale-90 ${i === productForm.images.length - 1 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent hover:text-white'}`}
                           >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+
+                          <button 
+                            type="button" 
+                            onClick={() => removeMedia(i, 'images')} 
+                            className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-2xl active:scale-90"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
