@@ -350,13 +350,13 @@ const Dashboard = () => {
                 <button
                   key={i + 1}
                   onClick={() => fetchProducts(i + 1)}
-                  className={`relative w-10 h-10 flex items-center justify-center text-[11px] font-black transition-all rounded-full ${currentPage === i + 1 ? 'text-silk-base' : 'text-ganache-rich/30 hover:text-ganache-rich hover:bg-silk-base/50'}`}
+                  className={`relative w-10 h-10 flex items-center justify-center text-[11px] font-black transition-all rounded-full ${currentPage === i + 1 ? 'text-silk-base' : 'text-ganache-rich/60 hover:text-ganache-rich hover:bg-silk-base/50'}`}
                 >
                   <span className="relative z-10">{String(i + 1).padStart(2, '0')}</span>
                   {currentPage === i + 1 && (
                     <motion.div 
                       layoutId="active-page-bg"
-                      className="absolute inset-0 bg-ganache-rich rounded-full shadow-2xl shadow-ganache-rich/20"
+                      className="absolute inset-0 bg-ganache-rich rounded-full shadow-2xl shadow-ganache-rich/40"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
@@ -634,7 +634,7 @@ const Dashboard = () => {
                         </div>
 
                         <div className="flex flex-wrap items-center justify-center gap-3 max-w-[180px]">
-                          <label className="w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center hover:bg-copper-accent hover:text-white transition-all cursor-pointer shadow-2xl active:scale-90">
+                          <label className="w-10 h-10 rounded-full bg-ganache-rich text-silk-base flex items-center justify-center hover:bg-copper-accent transition-all cursor-pointer shadow-2xl active:scale-90 border border-white/10">
                             <UploadCloud className="w-4 h-4" />
                             <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'images')} />
                           </label>
@@ -643,7 +643,7 @@ const Dashboard = () => {
                             type="button" 
                             onClick={() => moveMedia(i, 'left', 'images')} 
                             disabled={i === 0}
-                            className={`w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center transition-all shadow-2xl active:scale-90 ${i === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent hover:text-white'}`}
+                            className={`w-10 h-10 rounded-full bg-ganache-rich text-silk-base flex items-center justify-center transition-all shadow-2xl active:scale-90 border border-white/10 ${i === 0 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent'}`}
                           >
                             <ChevronLeft className="w-4 h-4" />
                           </button>
@@ -652,7 +652,7 @@ const Dashboard = () => {
                             type="button" 
                             onClick={() => moveMedia(i, 'right', 'images')} 
                             disabled={i === productForm.images.length - 1}
-                            className={`w-10 h-10 rounded-full bg-white text-ganache-rich flex items-center justify-center transition-all shadow-2xl active:scale-90 ${i === productForm.images.length - 1 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent hover:text-white'}`}
+                            className={`w-10 h-10 rounded-full bg-ganache-rich text-silk-base flex items-center justify-center transition-all shadow-2xl active:scale-90 border border-white/10 ${i === productForm.images.length - 1 ? 'opacity-20 pointer-events-none' : 'hover:bg-copper-accent'}`}
                           >
                             <ChevronRight className="w-4 h-4" />
                           </button>
@@ -660,7 +660,7 @@ const Dashboard = () => {
                           <button 
                             type="button" 
                             onClick={() => removeMedia(i, 'images')} 
-                            className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-all shadow-2xl active:scale-90"
+                            className="w-10 h-10 rounded-full bg-red-800 text-white flex items-center justify-center hover:bg-red-900 transition-all shadow-2xl active:scale-90 border border-white/10"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
