@@ -345,16 +345,20 @@ const Dashboard = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               {[...Array(metadata.total_pages)].map((_, i) => (
                 <button
                   key={i + 1}
                   onClick={() => fetchProducts(i + 1)}
-                  className={`text-[10px] uppercase tracking-[0.4em] font-black transition-all pb-1 relative ${currentPage === i + 1 ? 'text-copper-accent' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
+                  className={`relative w-10 h-10 flex items-center justify-center text-[11px] font-black transition-all rounded-full ${currentPage === i + 1 ? 'text-white' : 'text-ganache-rich/30 hover:text-ganache-rich hover:bg-silk-base/50'}`}
                 >
-                  {String(i + 1).padStart(2, '0')}
+                  <span className="relative z-10">{String(i + 1).padStart(2, '0')}</span>
                   {currentPage === i + 1 && (
-                    <motion.div layoutId="dash-pagination-underline" className="absolute bottom-0 left-0 w-full h-[1px] bg-copper-accent" />
+                    <motion.div 
+                      layoutId="active-page-bg"
+                      className="absolute inset-0 bg-copper-accent rounded-full shadow-lg shadow-copper-accent/30"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
                   )}
                 </button>
               ))}
