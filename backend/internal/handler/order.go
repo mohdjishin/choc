@@ -12,6 +12,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/middleware"
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
+	"github.com/rs/zerolog"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -20,6 +21,7 @@ import (
 type OrderHandler struct {
 	DB     *db.MongoClient
 	Config *config.Config
+	Logger zerolog.Logger
 }
 
 func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -149,6 +151,10 @@ func (h *OrderHandler) UpdateOrderStatus(w http.ResponseWriter, r *http.Request)
 
 	// 3. Prevent updates from terminal states (CANCELED, DELIVERED)
 	if currentOrder.Status == models.OrderStatusCanceled || currentOrder.Status == models.OrderStatusDelivered {
+		h.Logger.Warn().
+			Str("order_id", orderID.Hex()).
+			Str("current_status", string(currentOrder.Status)).
+			Msg("Attempted to update a terminal order")
 		utils.ErrorResponse(w, http.StatusBadRequest, "Cannot update the status of a CANCELED or DELIVERED order")
 		return
 	}
@@ -164,9 +170,19 @@ func (h *OrderHandler) UpdateOrderStatus(w http.ResponseWriter, r *http.Request)
 
 	_, err = h.DB.Database.Collection("orders").UpdateOne(ctx, filter, update)
 	if err != nil {
+		h.Logger.Error().
+			Err(err).
+			Str("order_id", orderID.Hex()).
+			Msg("Failed to update order status")
 		utils.ErrorResponse(w, http.StatusInternalServerError, "Error updating order status")
 		return
 	}
 
+	h.Logger.Info().
+		Str("order_id", orderID.Hex()).
+		Str("from", string(currentOrder.Status)).
+		Str("to", string(req.Status)).
+		Str("reason", req.CancelReason).
+		Msg("Order status updated successfully")
 	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "Order status updated"})
 }

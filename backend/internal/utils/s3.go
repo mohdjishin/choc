@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"mime/multipart"
 	"strings"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/muhammedjishinjamal/choc/backend/internal/config"
+	"github.com/rs/zerolog/log"
 )
 
 type S3Uploader struct {
@@ -24,14 +24,18 @@ func (u *S3Uploader) UploadFile(file multipart.File, filename string) (string, e
 
 	sess, err := session.NewSession(cfg)
 	if err != nil {
-		log.Printf("Failed to create S3 session: %v", err)
+		log.Error().Err(err).Msg("Failed to create S3 session")
 		return "", fmt.Errorf("failed to create session: %v", err)
 	}
 
 	uploader := s3manager.NewUploader(sess)
 
 	key := fmt.Sprintf("products/%s", filename)
-	log.Printf("Starting S3 upload: bucket=%s, key=%s, region=%s", u.Config.AWSBucket, key, u.Config.AWSRegion)
+	log.Info().
+		Str("bucket", u.Config.AWSBucket).
+		Str("key", key).
+		Str("region", u.Config.AWSRegion).
+		Msg("Starting S3 upload")
 
 	result, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(u.Config.AWSBucket),
@@ -40,13 +44,13 @@ func (u *S3Uploader) UploadFile(file multipart.File, filename string) (string, e
 	})
 
 	if err != nil {
-		log.Printf("S3 Upload Error: %v", err)
+		log.Error().Err(err).Msg("S3 Upload Error")
 		return "", fmt.Errorf("failed to upload file to S3 (%s): %v", u.Config.AWSBucket, err)
 	}
 
 	finalURL := result.Location
 
-	log.Printf("S3 upload successful. URL: %s", finalURL)
+	log.Info().Str("url", finalURL).Msg("S3 upload successful")
 	return finalURL, nil
 }
 
@@ -73,7 +77,7 @@ func (u *S3Uploader) DeleteFile(fileURL string) error {
 	})
 
 	if err != nil {
-		log.Printf("S3 Delete Error: %v", err)
+		log.Error().Err(err).Msg("S3 Delete Error")
 		return fmt.Errorf("failed to delete file from s3: %v", err)
 	}
 

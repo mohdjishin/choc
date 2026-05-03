@@ -2,10 +2,10 @@ package db
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
+	"github.com/rs/zerolog/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -55,7 +55,10 @@ func SeedDefaultUsers(db *MongoClient) error {
 		if err != nil {
 			return err
 		}
-		log.Printf("Default user %s (%s) seeded/updated successfully.\n", u.email, u.role)
+		log.Info().
+			Str("email", u.email).
+			Str("role", string(u.role)).
+			Msg("Default user seeded/updated successfully")
 	}
 
 	return nil
@@ -515,6 +518,6 @@ func SeedProducts(db *MongoClient) error {
 		}
 	}
 
-	log.Println("Initial products seeded/updated successfully.")
+	log.Info().Msg("Initial products seeded/updated successfully")
 	return nil
 }

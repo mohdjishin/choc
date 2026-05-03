@@ -12,6 +12,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
 	"github.com/muhammedjishinjamal/choc/backend/internal/middleware"
+	"github.com/rs/zerolog"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
@@ -20,6 +21,7 @@ import (
 type AuthHandler struct {
 	DB     *db.MongoClient
 	Config *config.Config
+	Logger zerolog.Logger
 }
 
 type RegisterRequest struct {
@@ -132,6 +134,11 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "Error generating token")
 		return
 	}
+
+	h.Logger.Info().
+		Str("email", user.Email).
+		Str("role", string(user.Role)).
+		Msg("User logged in successfully")
 
 	utils.JSONResponse(w, http.StatusOK, AuthResponse{
 		Token: tokenString,

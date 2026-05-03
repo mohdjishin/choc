@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,12 +13,13 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/handler"
 	"github.com/muhammedjishinjamal/choc/backend/internal/router"
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
 	// 0. Initialize Logger
 	utils.InitLogger()
-	logger := slog.Default()
+	logger := log.Logger
 
 	// 1. Load Configuration
 	cfg := config.Load()
@@ -27,17 +27,17 @@ func main() {
 	// 2. Connect to MongoDB
 	mongoClient, err := db.Connect(cfg.MongoURI, cfg.DBName)
 	if err != nil {
-		logger.Warn("Could not connect to MongoDB, proceeding without DB", "error", err)
+		logger.Warn().Err(err).Msg("Could not connect to MongoDB, proceeding without DB")
 	} else {
-		logger.Info("Connected to MongoDB successfully")
+		logger.Info().Msg("Connected to MongoDB successfully")
 		
 		// 3. Seed Default Users
 		if err := db.SeedDefaultUsers(mongoClient); err != nil {
-			logger.Error("Failed to seed default users", "error", err)
+			logger.Error().Err(err).Msg("Failed to seed default users")
 			os.Exit(1)
 		}
 		if err := db.SeedProducts(mongoClient); err != nil {
-			logger.Error("Failed to seed products", "error", err)
+			logger.Error().Err(err).Msg("Failed to seed products")
 			os.Exit(1)
 		}
 		
@@ -48,19 +48,23 @@ func main() {
 	authHandler := &handler.AuthHandler{
 		DB:     mongoClient,
 		Config: cfg,
+		Logger: logger,
 	}
 	productHandler := &handler.ProductHandler{
 		DB:     mongoClient,
 		Config: cfg,
+		Logger: logger,
 	}
 	cartHandler := &handler.CartHandler{
 		DB:     mongoClient,
 		Config: cfg,
+		Logger: logger,
 	}
 
 	orderHandler := &handler.OrderHandler{
 		DB:     mongoClient,
 		Config: cfg,
+		Logger: logger,
 	}
 
 	// 4. Initialize Router
@@ -80,23 +84,23 @@ func main() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		logger.Info("Server is starting", "port", cfg.Port)
+		logger.Info().Str("port", cfg.Port).Msg("Server is starting")
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error("Could not listen", "port", cfg.Port, "error", err)
+			logger.Error().Str("port", cfg.Port).Err(err).Msg("Could not listen")
 			os.Exit(1)
 		}
 	}()
 
 	<-done
-	logger.Info("Server is shutting down...")
+	logger.Info().Msg("Server is shutting down...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		logger.Error("Server forced to shutdown", "error", err)
+		logger.Error().Err(err).Msg("Server forced to shutdown")
 		os.Exit(1)
 	}
 
-	logger.Info("Server exited gracefully")
+	logger.Info().Msg("Server exited gracefully")
 }

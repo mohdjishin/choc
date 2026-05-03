@@ -1,20 +1,20 @@
 package utils
 
 import (
-	"log/slog"
 	"os"
+	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var Logger *slog.Logger
-
 func InitLogger() {
-	opts := &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}
+	// UNIX Time is faster and smaller than most timestamps
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	
-	// Use JSON handler for structured logging
-	handler := slog.NewJSONHandler(os.Stdout, opts)
-	Logger = slog.New(handler)
+	// Create a console writer for pretty logging in development
+	// For production, you might want to use raw JSON to stdout
+	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
 	
-	slog.SetDefault(Logger)
+	log.Logger = zerolog.New(output).With().Timestamp().Logger()
 }

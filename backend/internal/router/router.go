@@ -35,7 +35,7 @@ func New(authHandler *handler.AuthHandler, productHandler *handler.ProductHandle
 	}))
 
 	// Global Middlewares
-	r.Use(middleware.Logger)    // Log every request
+	r.Use(customMiddleware.StructuredLogger(authHandler.Logger))
 	r.Use(middleware.Recoverer) // Recover from panics
 	r.Use(middleware.CleanPath) // Clean trailing slashes
 	r.Use(middleware.RealIP)    // Get client real IP

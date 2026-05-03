@@ -11,6 +11,7 @@ import (
 	"github.com/muhammedjishinjamal/choc/backend/internal/middleware"
 	"github.com/muhammedjishinjamal/choc/backend/internal/models"
 	"github.com/muhammedjishinjamal/choc/backend/internal/utils"
+	"github.com/rs/zerolog"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -20,6 +21,7 @@ import (
 type CartHandler struct {
 	DB     *db.MongoClient
 	Config *config.Config
+	Logger zerolog.Logger
 }
 
 func (h *CartHandler) GetCart(w http.ResponseWriter, r *http.Request) {
