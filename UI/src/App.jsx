@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar'
@@ -14,6 +15,11 @@ const Register = React.lazy(() => import('./pages/Register'));
 const Store = React.lazy(() => import('./pages/Store'));
 const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+
+import { CartProvider } from './context/CartContext';
+import CartDrawer from './components/CartDrawer';
+
+import PageWrapper from './components/PageWrapper';
 
 function AppContent() {
   const location = useLocation();
@@ -38,47 +44,60 @@ function AppContent() {
         }}
       />
       {!isAuthPage && <Navbar />}
+      <CartDrawer />
       <React.Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/store" element={<Store />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/unauthorized" element={
-            <div className="flex flex-col items-center justify-center h-[70vh] text-[#2D1B14]">
-              <h1 className="text-4xl font-serif italic text-ganache-rich">Unauthorized Access</h1>
-              <p className="mt-4 font-sans uppercase tracking-widest text-xs text-ganache-rich/60">You do not have permission to view this page.</p>
-              <button 
-                onClick={() => window.history.back()}
-                className="mt-8 border border-[#C19A6B] px-8 py-3 text-[#C19A6B] hover:bg-[#C19A6B] hover:text-white transition-all uppercase tracking-widest text-xs font-bold"
-              >
-                Go Back
-              </button>
-            </div>
-          } />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+            <Route path="/store" element={<PageWrapper><Store /></PageWrapper>} />
+            <Route path="/product/:id" element={<PageWrapper><ProductDetail /></PageWrapper>} />
+            <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+            <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+            <Route 
+              path="/dashboard" 
+              element={
+                <PageWrapper>
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                </PageWrapper>
+              } 
+            />
+            <Route path="/unauthorized" element={
+              <PageWrapper>
+                <div className="flex flex-col items-center justify-center h-[70vh] text-[#2D1B14] px-4 text-center">
+                  <h1 className="text-4xl font-serif italic text-ganache-rich">Unauthorized Access</h1>
+                  <p className="mt-4 font-sans uppercase tracking-widest text-[10px] text-ganache-rich/60 leading-loose">You do not have the clearance levels required to access the Boutique Archives.</p>
+                  <button 
+                    onClick={() => window.location.href = '/'}
+                    className="mt-12 bg-ganache-rich text-silk-base px-10 py-4 rounded-full text-[10px] uppercase tracking-[0.4em] font-bold hover:bg-copper-accent transition-all shadow-2xl"
+                  >
+                    Return to Maison
+                  </button>
+                </div>
+              </PageWrapper>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
       </React.Suspense>
       {!isAuthPage && <Footer />}
     </div>
   )
 }
 
+import { WishlistProvider } from './context/WishlistContext';
+
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <CartProvider>
+        <Router>
+          <WishlistProvider>
+            <AppContent />
+          </WishlistProvider>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

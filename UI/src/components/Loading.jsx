@@ -3,43 +3,34 @@ import { motion } from 'framer-motion';
 
 const Loading = () => {
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-silk-base">
-      <div className="relative w-32 h-32">
-        {/* Outer Ring */}
-        <motion.div
-          className="absolute inset-0 border-2 border-copper-accent/20 rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-        />
-        
-        {/* Animated Arc */}
-        <motion.div
-          className="absolute inset-0 border-t-2 border-copper-accent rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Center Logo/Icon Placeholder */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0.3, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
-            className="w-12 h-12 bg-ganache-rich/10 rounded-full flex items-center justify-center"
-          >
-            <div className="w-6 h-6 bg-copper-accent rounded-sm rotate-45" />
-          </motion.div>
+    <div className="w-full min-h-[80vh] bg-silk-base px-8 lg:px-24 py-20 space-y-24">
+      {/* Hero Skeleton */}
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="col-span-6 space-y-12">
+          <div className="h-4 w-48 shimmer rounded-full" />
+          <div className="h-32 w-full shimmer rounded-[2rem]" />
+          <div className="space-y-4">
+            <div className="h-4 w-3/4 shimmer rounded-full" />
+            <div className="h-4 w-1/2 shimmer rounded-full" />
+          </div>
+          <div className="h-16 w-64 shimmer rounded-full" />
         </div>
+        <div className="col-span-6 h-[600px] shimmer rounded-[3rem]" />
       </div>
-      
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 font-label-sm text-[10px] uppercase tracking-[0.5em] text-ganache-rich/40 font-bold"
-      >
-        Maison Al Ayham
-      </motion.p>
+
+      {/* Grid Skeleton */}
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 pt-24">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="space-y-8">
+            <div className="aspect-[4/5] shimmer rounded-sm" />
+            <div className="space-y-4">
+              <div className="h-2 w-20 shimmer rounded-full" />
+              <div className="h-8 w-40 shimmer rounded-full" />
+              <div className="h-6 w-24 shimmer rounded-full" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

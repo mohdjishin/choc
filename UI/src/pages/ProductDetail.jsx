@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import LazyImage from '../components/LazyImage';
-import { ShoppingBag, ChevronLeft, ChevronRight, Shield, Clock, Droplets, Plus, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { ShoppingBag, ChevronLeft, ChevronRight, Shield, Clock, Droplets, Plus, ArrowLeft, ArrowRight, Loader2, Heart } from 'lucide-react';
 import api from '../utils/api';
+import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { user } = useAuth();
   const [product, setProduct] = useState(null);
   const [navigation, setNavigation] = useState({ prev_id: null, next_id: null });
   const [loading, setLoading] = useState(true);
@@ -32,8 +40,32 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-copper-accent" />
+      <div className="bg-white min-h-screen pt-32 pb-48">
+        <div className="max-w-[1800px] mx-auto px-8 lg:px-24">
+          <div className="h-4 w-32 shimmer rounded-full mb-16" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
+            <div className="lg:col-span-7 space-y-8">
+              <div className="aspect-[4/5] shimmer" />
+              <div className="flex gap-4">
+                {[...Array(4)].map((_, i) => <div key={i} className="w-24 h-32 shimmer" />)}
+              </div>
+            </div>
+            <div className="lg:col-span-5 space-y-12">
+              <div className="space-y-6">
+                <div className="h-3 w-24 shimmer rounded-full" />
+                <div className="h-16 w-full shimmer rounded-full" />
+                <div className="h-8 w-32 shimmer rounded-full" />
+              </div>
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => <div key={i} className="h-4 w-full shimmer rounded-full" />)}
+              </div>
+              <div className="pt-10 space-y-6">
+                <div className="h-14 w-full shimmer rounded-full" />
+                <div className="h-14 w-full shimmer rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -46,6 +78,25 @@ const ProductDetail = () => {
       </div>
     );
   }
+
+  const handleAddToCart = () => {
+    if (!user) {
+      toast.error("Sign in to build your boutique archive");
+      navigate('/login', { state: { from: location.pathname } });
+      return;
+    }
+    addToCart(product, quantity);
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      toast.error("Sign in to proceed with secure checkout");
+      navigate('/login', { state: { from: location.pathname } });
+      return;
+    }
+    addToCart(product, quantity);
+    toast.success(`Initializing secure checkout...`);
+  };
 
   const allMedia = [...(product.images || []), ...(product.videos || [])];
 
@@ -60,6 +111,14 @@ const ProductDetail = () => {
           </Link>
           
           <div className="flex items-center gap-8">
+            <button 
+              onClick={() => toggleWishlist(product)}
+              className={`flex items-center gap-2 text-[10px] uppercase tracking-widest font-black transition-all ${isInWishlist(product.id) ? 'text-red-800' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
+            >
+              <Heart className={`w-4 h-4 ${isInWishlist(product.id) ? 'fill-red-800' : ''}`} />
+              <span className="hidden sm:inline">{isInWishlist(product.id) ? 'Saved to Favorites' : 'Add to Wishlist'}</span>
+            </button>
+            <div className="w-[1px] h-4 bg-ganache-rich/10" />
             {navigation.prev_id && (
               <Link to={`/product/${navigation.prev_id}`} className="text-ganache-rich/40 hover:text-ganache-rich transition-colors">
                 <ChevronLeft className="w-5 h-5" />
@@ -144,9 +203,7 @@ const ProductDetail = () => {
                 </div>
                 
                 <button 
-                  onClick={() => {
-                    import('react-hot-toast').then(t => t.default.success(`${product.name} added to your archive`));
-                  }}
+                  onClick={handleAddToCart}
                   className="flex-1 bg-[#2D1B14] text-[#FDFBF7] py-6 px-12 rounded-full text-[11px] uppercase tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(45,27,20,0.2)] hover:bg-[#C19A6B] hover:shadow-[0_20px_50px_rgba(193,154,107,0.3)] transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95"
                 >
                   <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" /> Add to Boutique Bag
@@ -154,9 +211,7 @@ const ProductDetail = () => {
               </div>
 
               <button 
-                onClick={() => {
-                    import('react-hot-toast').then(t => t.default.success(`Initializing secure checkout...`));
-                }}
+                onClick={handleBuyNow}
                 className="w-full bg-transparent border border-[#2D1B14] text-[#2D1B14] py-6 rounded-full text-[11px] uppercase tracking-[0.5em] font-black hover:bg-[#2D1B14] hover:text-white transition-all duration-700 flex items-center justify-center gap-4 group active:scale-95 shadow-sm"
               >
                 Buy Now
@@ -192,7 +247,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* ORIGIN & CRAFT SECTION (Added) */}
+        {/* ORIGIN & CRAFT SECTION */}
         {product.origins_craft && product.origins_craft.length > 0 && (
           <div className="space-y-48 mb-60">
             {product.origins_craft.map((block, i) => (
@@ -237,6 +292,20 @@ const ProductDetail = () => {
               </Link>
            </div>
         )}
+      </div>
+
+      {/* MOBILE STICKY PURCHASE BAR */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/80 backdrop-blur-xl border-t border-ganache-rich/5 p-6 z-[100] flex items-center gap-6 animate-slide-up">
+        <div className="flex-1">
+          <p className="text-[9px] uppercase tracking-widest font-black text-ganache-rich/40">Total</p>
+          <p className="text-lg font-headline-sm italic text-ganache-rich">AED {(product.price * quantity).toFixed(2)}</p>
+        </div>
+        <button 
+          onClick={handleAddToCart}
+          className="bg-[#2D1B14] text-white px-8 py-4 rounded-full text-[10px] uppercase tracking-[0.3em] font-black shadow-xl"
+        >
+          Add to Bag
+        </button>
       </div>
     </div>
   );

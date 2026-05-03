@@ -142,22 +142,26 @@ const Store = () => {
         </div>
 
         {/* Category Navigation */}
-        <div className="flex gap-12 overflow-x-auto pb-6 custom-scrollbar no-scrollbar scroll-smooth">
-          {categories.map(cat => (
-            <button 
-              key={cat}
-              onClick={() => {
-                setActiveCategory(cat);
-                setPage(1); // Reset to first page on category change
-              }}
-              className={`text-[11px] uppercase tracking-[0.4em] font-black whitespace-nowrap transition-all duration-500 relative pb-2 ${activeCategory === cat ? 'text-copper-accent' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
-            >
-              {cat}
-              {activeCategory === cat && (
-                <motion.div layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[1px] bg-copper-accent" />
-              )}
-            </button>
-          ))}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none lg:hidden" />
+          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+          <div className="flex gap-12 overflow-x-auto pb-6 custom-scrollbar no-scrollbar scroll-smooth relative px-4">
+            {categories.map(cat => (
+              <button 
+                key={cat}
+                onClick={() => {
+                  setActiveCategory(cat);
+                  setPage(1); // Reset to first page on category change
+                }}
+                className={`text-[11px] uppercase tracking-[0.4em] font-black whitespace-nowrap transition-all duration-500 relative pb-2 ${activeCategory === cat ? 'text-copper-accent' : 'text-ganache-rich/20 hover:text-ganache-rich'}`}
+              >
+                {cat}
+                {activeCategory === cat && (
+                  <motion.div layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[1px] bg-copper-accent" />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* 02. PRODUCT EXHIBITION */}
@@ -275,12 +279,12 @@ const Store = () => {
 };
 
 const SkeletonCard = () => (
-  <div className="space-y-8 animate-pulse">
-    <div className="aspect-[3/4] bg-ganache-rich/[0.02]" />
+  <div className="space-y-8">
+    <div className="aspect-[3/4] shimmer" />
     <div className="space-y-4">
-      <div className="h-2 w-24 bg-ganache-rich/[0.02] rounded-full" />
-      <div className="h-8 w-48 bg-ganache-rich/[0.02] rounded-full" />
-      <div className="h-4 w-12 bg-ganache-rich/[0.02] rounded-full" />
+      <div className="h-2 w-24 shimmer rounded-full" />
+      <div className="h-8 w-48 shimmer rounded-full" />
+      <div className="h-4 w-12 shimmer rounded-full" />
     </div>
   </div>
 );

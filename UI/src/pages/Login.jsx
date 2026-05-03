@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, Loader2 } from 'lucide-react';
@@ -11,6 +11,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +20,8 @@ const Login = () => {
 
     const result = await login(email, password);
     if (result.success) {
-      navigate('/');
+      const from = location.state?.from || '/';
+      navigate(from, { replace: true });
     } else {
       setError(result.message);
     }

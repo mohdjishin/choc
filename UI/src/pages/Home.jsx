@@ -2,25 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import api from '../utils/api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import LazyImage from '../components/LazyImage';
+import toast from 'react-hot-toast';
+
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [scrollY, setScrollY] = useState(0);
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.pageYOffset);
     window.addEventListener('scroll', handleScroll);
     
-    api.get('/products')
+    api.get('/products?selected=true')
       .then(res => {
         // The API now returns { products, metadata }
         const products = res.products || [];
         setFeaturedProducts(products.slice(0, 4));
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err))
+      .finally(() => setIsLoading(false));
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -46,7 +55,18 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {featuredProducts.map((product, i) => (
+            {isLoading ? (
+              [...Array(4)].map((_, i) => (
+                <div key={`skeleton-${i}`} className="space-y-8">
+                  <div className="aspect-[4/5] shimmer rounded-sm" />
+                  <div className="space-y-4">
+                    <div className="h-2 w-20 shimmer rounded-full" />
+                    <div className="h-8 w-40 shimmer rounded-full" />
+                    <div className="h-6 w-24 shimmer rounded-full" />
+                  </div>
+                </div>
+              ))
+            ) : featuredProducts.map((product, i) => (
               <Link 
                 to={`/product/${product.id}`}
                 key={product.id}
@@ -66,7 +86,17 @@ const Home = () => {
                     />
                     <div className="absolute inset-0 bg-ganache-rich/10 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
                     <button 
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        e.stopPropagation(); 
+                        if (!user) {
+                          toast.error("Sign in to build your boutique archive");
+                          navigate('/login', { state: { from: '/' } });
+                          return;
+                        }
+                        addToCart(product, 1);
+                        toast.success(`${product.name} added to archive`);
+                      }}
                       className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 bg-white text-ganache-rich px-8 py-4 rounded-full text-[9px] uppercase tracking-widest font-black flex items-center gap-3 shadow-2xl z-10"
                     >
                       <ShoppingBag className="w-3 h-3" /> Quick Add

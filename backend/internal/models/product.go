@@ -29,6 +29,7 @@ type Product struct {
 	Videos       []string           `bson:"videos" json:"videos"`
 	Details      []ProductDetail    `bson:"details" json:"details"`
 	OriginsCraft []CraftBlock       `bson:"origins_craft" json:"origins_craft"`
+	IsSelected   bool               `bson:"is_selected" json:"is_selected"`
 	CreatedAt    time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt    time.Time          `bson:"updated_at" json:"updated_at"`
 }

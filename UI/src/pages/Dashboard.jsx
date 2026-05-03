@@ -36,7 +36,8 @@ const Dashboard = () => {
     images: [],
     videos: [],
     details: [{ title: 'Contents & Composition', content: '' }, { title: 'Storage & Care', content: '' }],
-    origins_craft: []
+    origins_craft: [],
+    is_selected: false
   });
 
   const [products, setProducts] = useState([]);
@@ -118,7 +119,8 @@ const Dashboard = () => {
       images: prod.images?.length ? prod.images : [''],
       videos: prod.videos?.length ? prod.videos : [''],
       details: prod.details?.length ? prod.details : [{ title: '', content: '' }],
-      origins_craft: prod.origins_craft?.length ? prod.origins_craft : []
+      origins_craft: prod.origins_craft?.length ? prod.origins_craft : [],
+      is_selected: prod.is_selected || false
     });
     setActiveTab('studio');
   };
@@ -129,7 +131,8 @@ const Dashboard = () => {
       name: '', price: '', category: 'Truffles', stock: '', description: '', 
       images: [''], videos: [''],
       details: [{ title: 'Contents & Composition', content: '' }, { title: 'Storage & Care', content: '' }],
-      origins_craft: []
+      origins_craft: [],
+      is_selected: false
     });
     setActiveTab('inventory');
   };
@@ -225,7 +228,7 @@ const Dashboard = () => {
                 <p className="text-ganache-rich font-bold text-[12px] uppercase tracking-widest group-hover:text-copper-accent transition-colors">{item.title}</p>
                 <p className="text-ganache-rich/30 text-[10px] mt-2 italic">{item.desc}</p>
               </div>
-              <div className={`w-14 h-7 rounded-full relative cursor-pointer transition-all duration-500 ${item.active ? 'bg-copper-accent' : 'bg-ganache-rich/5'}`}>
+              <div className={`w-14 h-7 rounded-full relative cursor-pointer transition-all duration-500 ${item.active ? 'bg-green-500' : 'bg-gray-200'}`}>
                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all duration-500 shadow-sm ${item.active ? 'right-1' : 'left-1'}`}></div>
               </div>
             </div>
@@ -267,7 +270,34 @@ const Dashboard = () => {
             </thead>
             <tbody className="divide-y divide-ganache-rich/[0.01]">
               {isLoadingProducts ? (
-                <tr><td colSpan="5" className="py-40 text-center"><Loader2 className="w-10 h-10 animate-spin text-copper-accent mx-auto opacity-20" /></td></tr>
+                [...Array(5)].map((_, i) => (
+                  <tr key={`skeleton-${i}`}>
+                    <td className="px-12 py-8">
+                      <div className="flex items-center gap-8">
+                        <div className="w-16 h-16 rounded-3xl shimmer" />
+                        <div className="space-y-3">
+                          <div className="h-3 w-32 shimmer rounded-full" />
+                          <div className="h-2 w-20 shimmer rounded-full" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-8">
+                      <div className="h-6 w-24 shimmer rounded-full" />
+                    </td>
+                    <td className="px-8 py-8">
+                      <div className="h-8 w-28 shimmer rounded-full ml-auto" />
+                    </td>
+                    <td className="px-8 py-8">
+                      <div className="h-4 w-12 shimmer rounded-full mx-auto" />
+                    </td>
+                    <td className="px-12 py-8">
+                      <div className="flex justify-end gap-4">
+                        <div className="w-12 h-12 rounded-2xl shimmer" />
+                        <div className="w-12 h-12 rounded-2xl shimmer" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
               ) : products.map((prod) => (
                 <tr key={prod.id} className="group hover:bg-silk-base/20 transition-all duration-500 cursor-default">
                   <td className="px-12 py-8">
@@ -374,6 +404,19 @@ const Dashboard = () => {
               <div className="space-y-6">
                 <label className="text-[10px] uppercase tracking-[0.5em] font-black text-ganache-rich/30 ml-8 italic">Price (AED)</label>
                 <input type="number" step="0.01" required value={productForm.price} onChange={(e) => setProductForm({...productForm, price: e.target.value})} className="w-full bg-white/40 border border-ganache-rich/5 py-6 px-10 rounded-full text-ganache-rich text-[11px] font-bold tracking-widest outline-none focus:bg-white focus:shadow-xl transition-all" placeholder="0.00" />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-8 bg-silk-base/10 rounded-[2rem] border border-ganache-rich/5">
+              <div>
+                <p className="text-ganache-rich font-bold text-[12px] uppercase tracking-widest">Selected Works</p>
+                <p className="text-ganache-rich/30 text-[10px] mt-2 italic">Feature this product on the home page</p>
+              </div>
+              <div 
+                onClick={() => setProductForm({...productForm, is_selected: !productForm.is_selected})}
+                className={`w-14 h-7 rounded-full relative cursor-pointer transition-all duration-500 ${productForm.is_selected ? 'bg-green-500' : 'bg-gray-200'}`}
+              >
+                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all duration-500 shadow-sm ${productForm.is_selected ? 'right-1' : 'left-1'}`}></div>
               </div>
             </div>
 

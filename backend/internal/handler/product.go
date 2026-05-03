@@ -102,6 +102,9 @@ func (h *ProductHandler) ListProducts(w http.ResponseWriter, r *http.Request) {
 	if stockOnly {
 		filter["stock"] = bson.M{"$gt": 0}
 	}
+	if r.URL.Query().Get("selected") == "true" {
+		filter["is_selected"] = true
+	}
 
 	// Count total products for metadata
 	totalCount, err := collection.CountDocuments(ctx, filter)
@@ -252,6 +255,7 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 			"videos":        newProduct.Videos,
 			"details":       newProduct.Details,
 			"origins_craft": newProduct.OriginsCraft,
+			"is_selected":   newProduct.IsSelected,
 			"updated_at":    newProduct.UpdatedAt,
 		},
 	}

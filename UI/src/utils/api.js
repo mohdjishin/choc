@@ -34,7 +34,8 @@ api.interceptors.response.use(
   },
   (error) => {
     // Handle 401 Unauthorized globally
-    if (error.response?.status === 401) {
+    // We EXCLUDE the login endpoint itself so we can show "Invalid Credentials" to the user
+    if (error.response?.status === 401 && !error.config.url.includes('/auth/login')) {
       localStorage.removeItem('auth');
       window.location.href = '/login';
     }

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useCart } from '../context/CartContext'
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { user, logout } = useAuth()
+  const { itemCount, setIsDrawerOpen } = useCart()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -72,11 +74,25 @@ const Navbar = () => {
               <span className="material-symbols-outlined text-[24px] font-light">search</span>
             </button>
             
+            <button 
+              onClick={() => setIsDrawerOpen(true)}
+              className="relative w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" 
+              title="Boutique Bag"
+            >
+              <span className="material-symbols-outlined text-[24px] font-light">shopping_bag</span>
+              {itemCount > 0 && (
+                <motion.span 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-copper-accent text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-lg"
+                >
+                  {itemCount}
+                </motion.span>
+              )}
+            </button>
+
             {user ? (
               <div className="flex items-center gap-2 lg:gap-6">
-                <Link to="/dashboard" className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" title="My Orders">
-                  <span className="material-symbols-outlined text-[24px] font-light">shopping_bag</span>
-                </Link>
                 <Link to="/dashboard" className="w-10 h-10 flex items-center justify-center text-ganache-rich hover:text-copper-accent transition-all duration-500" title="Profile">
                   <span className="material-symbols-outlined text-[24px] font-light">person</span>
                 </Link>
