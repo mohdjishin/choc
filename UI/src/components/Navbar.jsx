@@ -157,63 +157,63 @@ const Navbar = () => {
                 </button>
               </div>
 
-              <div className="flex flex-col gap-12 mt-12">
+              <div className="flex-1 flex flex-col justify-center items-center gap-10">
                 {[
-                  { label: 'Shop', path: '/store', num: '01' },
-                  { label: 'Our Story', path: '/', num: '02' },
-                  { label: 'Orders', path: '/orders', num: '03', protected: true, role: 'customer' },
-                  { label: 'Dashboard', path: '/dashboard', num: '04', protected: true },
+                  { label: 'Shop', path: '/store' },
+                  { label: 'Our Story', path: '/' },
+                  { label: 'Orders', path: '/orders', protected: true, role: 'customer' },
+                  { label: 'Dashboard', path: '/dashboard', protected: true },
                 ].filter(item => !item.protected || (user && (!item.role || user.role === item.role))).map((item, i) => (
                   <motion.div
                     key={item.label}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * i + 0.3 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
                   >
                     <Link 
-                      className="group flex items-end gap-6 no-underline" 
+                      className="text-[12px] uppercase tracking-[0.6em] font-black text-ganache-rich hover:text-copper-accent transition-all duration-500" 
                       to={item.path} 
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <span className="font-label-sm text-[10px] text-copper-accent mb-2 font-bold tracking-widest">{item.num}</span>
-                      <span className="text-5xl font-headline-lg italic text-ganache-rich group-hover:text-copper-accent transition-colors duration-500">
-                        {item.label}
-                      </span>
+                      {item.label}
                     </Link>
                   </motion.div>
                 ))}
                 
                 {user ? (
                    <motion.button 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
                     onClick={handleLogout} 
-                    className="text-left group flex items-end gap-6 mt-8"
+                    className="text-[10px] uppercase tracking-[0.4em] font-bold text-red-800/60 hover:text-red-800 transition-colors mt-8"
                   >
-                    <span className="font-label-sm text-[10px] text-red-800/40 mb-2 font-bold tracking-widest">→</span>
-                    <span className="text-4xl font-headline-lg italic text-red-800/60 group-hover:text-red-800 transition-colors">Logout</span>
+                    Logout
                   </motion.button>
                 ) : (
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="mt-8"
                   >
-                    <Link className="group flex items-end gap-6" to="/login" onClick={() => setMobileMenuOpen(false)}>
-                      <span className="font-label-sm text-[10px] text-copper-accent mb-2 font-bold tracking-widest">BY</span>
-                      <span className="text-5xl font-headline-lg italic text-copper-accent">Login</span>
+                    <Link 
+                      className="bg-ganache-rich text-silk-base px-10 py-4 rounded-full text-[10px] uppercase tracking-[0.4em] font-bold shadow-xl shadow-ganache-rich/20" 
+                      to="/login" 
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
                     </Link>
                   </motion.div>
                 )}
               </div>
 
               {/* Mobile Footer Info */}
-              <div className="mt-auto pt-20 border-t border-ganache-rich/5">
-                <p className="text-[9px] uppercase tracking-[0.5em] font-black text-ganache-rich/20 mb-4 text-center">Regional Boutique</p>
-                <div className="flex justify-center gap-8">
+              <div className="pt-20 border-t border-ganache-rich/5 flex flex-col items-center gap-6">
+                <div className="text-[14px] font-headline-lg italic text-ganache-rich/30 tracking-tight">Jabal Al Ayham</div>
+                <div className="flex gap-8">
                   {['Instagram', 'Archive'].map(link => (
-                    <span key={link} className="text-[10px] uppercase tracking-widest font-bold text-ganache-rich/40">{link}</span>
+                    <span key={link} className="text-[9px] uppercase tracking-[0.3em] font-black text-ganache-rich/10">{link}</span>
                   ))}
                 </div>
               </div>
