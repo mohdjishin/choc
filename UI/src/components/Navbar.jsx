@@ -62,7 +62,7 @@ const Navbar = () => {
 
           {/* Center: Brand Title (Absolutely Centered) */}
           <div className="absolute left-1/2 -translate-x-1/2 flex justify-center items-center pointer-events-auto">
-            <Link to="/" className="text-xl lg:text-3xl font-bold tracking-[-0.03em] text-ganache-rich whitespace-nowrap group cursor-pointer text-center no-underline">
+            <Link to="/" className="text-3xl lg:text-5xl font-bold tracking-[-0.03em] text-ganache-rich whitespace-nowrap group cursor-pointer text-center no-underline font-headline-lg italic">
               Jabal Al Ayham
               <div className="h-[1px] w-0 group-hover:w-full bg-copper-accent transition-all duration-1000 mx-auto mt-[-2px]"></div>
             </Link>
@@ -85,7 +85,7 @@ const Navbar = () => {
                   <motion.span 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-2 -right-2 w-5 h-5 bg-[#C19A6B] text-white text-[10px] font-black flex items-center justify-center rounded-full shadow-xl z-10"
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-[#C19A6B] text-white text-[11px] font-black flex items-center justify-center rounded-full shadow-2xl z-10 border border-white/20"
                   >
                     {itemCount}
                   </motion.span>
